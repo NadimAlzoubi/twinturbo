@@ -1,0 +1,246 @@
+@import url("https://fonts.googleapis.com/css2?family=Readex+Pro:wght@160..700&family=Tajawal:wght@200;300;400;500;700;800;900&family=Zain:wght@200;300;400;700;800;900&display=swap");
+
+* {
+  font-family: "Readex Pro", sans-serif;
+}
+
+/* root colors */
+:root {
+    --primary-color: #3498db;
+}
+
+*,
+*::after,
+*::before {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    position: relative;
+    background-color: #ddd !important;
+    color: #121212 !important;
+}
+nav li{
+    place-content: center;
+}
+
+.navbar {
+    background-color: #fff;
+}
+
+#navbarNav ul li {
+    margin: 0 0.3rem !important;
+}
+
+#navbarNav .nav-item {
+    border-radius: 3px;
+}
+
+#navbarNav .nav-item:hover {
+    outline: 2px solid var(--primary-color);
+    box-shadow: '0 4px 8px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.3)';
+}
+
+.navbar-toggler {
+    margin: 0 1rem;
+    size: calc(100% - 25%);
+}
+
+.dataTable {
+    width: 100% !important;
+    text-align: center !important;
+}
+
+table.dataTable thead>tr>th {
+    text-align: center !important;
+}
+
+.dataTables_length,
+.dataTables_filter {
+    display: inline-block;
+    margin-left: 1.5rem;
+}
+
+.dt-button-collection {
+    width: auto !important;
+
+    .dt-button:not(.dt-btn-split-drop) {
+        min-width: 4rem !important;
+    }
+}
+
+div.dataTables_wrapper {
+    margin: 0 auto !important;
+}
+
+div.dataTables_wrapper .top .dataTables_info {
+    display: none;
+}
+
+.table .col-actions {
+    width: 7rem;
+}
+
+/* توسيط الأزرار بجوار السلكت */
+.dataTables_length,
+.dataTables_filter,
+.dataTables_paginate {
+    float: left;
+    margin-right: 10px;
+    /* تباعد بين العناصر */
+}
+
+table {
+    text-align: center !important;
+}
+
+#pdf-table thead tr th,
+#pdf-table tbody tr td,
+table tbody tr td,
+table thead tr td,
+table tfoot tr td {
+    background-color: #fff;
+    color: #000;
+}
+
+.card-text {
+    font-size: small;
+}
+
+
+.dt-button-collection {
+    width: auto !important;
+
+    .dt-button:not(.dt-btn-split-drop) {
+        min-width: 4rem !important;
+    }
+}
+
+.dt-buttons {
+    display: inline-block;
+}
+
+.dt-button {
+    background-color: #337ab7;
+    /* لون الخلفية */
+    color: #fff;
+    /* لون النص */
+    border: none;
+    /* حذف الحدود */
+    border-radius: 5px;
+    /* تقريب الزوايا */
+    padding: 5px 10px;
+    /* تباعد النص عن الحواف */
+    margin-right: 5px;
+    /* تباعد بين الأزرار */
+}
+
+.table-section .top {
+    margin-bottom: 1rem !important;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    margin-bottom: 0.5rem;
+}
+
+.nav-item {
+    text-align: center;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+}
+
+.bg-purblee {
+    background-color: #6f42c1 !important;
+    color: white !important;
+}
+
+select.form-select option {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+}
+
+
+
+#updates-svg {
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+#updates-svg:hover {
+    transform: scale(1.2);
+}
+
+
+
+.blink {
+    animation: blinker 1s linear infinite;
+    /* تغيير مدة الأنيميشن */
+}
+
+@keyframes blinker {
+
+    0%,
+    100% {
+        transform: scale(1) rotate(0deg);
+        /* البداية والنهاية */
+    }
+
+    25% {
+        transform: scale(1.1) rotate(-3deg);
+        /* تكبير قليلًا وزاوية دوران لليسار */
+    }
+
+    50% {
+        transform: scale(1.1) rotate(3deg);
+        /* تكبير وزاوية دوران لليمين */
+    }
+
+    75% {
+        transform: scale(1) rotate(0deg);
+        /* العودة إلى الحجم الطبيعي وزاوية 0 */
+    }
+}
+
+
+
+
+
+.form-container {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: repeat(1, 1fr);
+}
+
+@media (min-width: 768px) {
+    .form-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .form-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .form-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

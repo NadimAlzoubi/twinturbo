@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap');  
+*{
+	box-sizing: border-box;
+	font-family: Cairo;
+}
+.gradient-background {
+	height: 600px;
+	background: linear-gradient(62deg, #ffffff, #add8e6, #87cefa, #b0e0e6);
+	animation: gradient 15s ease infinite; 
+	background-size: 400% 400%;
+	
+  }
+  @-webkit-keyframes gradient{
+	0% {
+	  background-position: 0 50%;
+	}
+	50% {
+	  background-position: 100% 50%;
+	}
+	100% {
+	   background-position: 0% 50%;
+	}
+  }
+  @keyframes gradient{
+	0% {
+	  background-position: 0 50%;
+	}
+	50% {
+	  background-position: 100% 50%;
+	}
+	100% {
+	   background-position: 0% 50%;
+	}
+  }
+
+.wrapper {	
+	margin-top: 80px;
+  	margin-bottom: 30px;
+}
+.form-signin {
+	max-width: 380px;
+	padding: 15px 35px 45px;
+	margin: 0 auto;
+	background-color: #fff;
+	border: 1px solid rgba(0,0,0,0.1);  
+	border-radius: 4px;
+}
+.form-signin-heading{
+	margin-bottom: 30px;
+	text-align: center;
+}
+p{
+	text-align: center;
+    color: red;
+}
+.form-control {
+	position: relative;
+	font-size: 16px;
+	height: auto;
+	padding: 10px;
+	&:focus {
+		z-index: 2;
+	}
+}
+
+input[type="text"] {
+	margin-bottom: 2rem;
+}
+
+input[type="password"] {
+	margin-bottom: 1.5rem;
+}
