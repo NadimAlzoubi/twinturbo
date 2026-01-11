@@ -847,29 +847,31 @@ function sauOffices($option, $id = null)
     $error_msg = null;
 
     $office_name = mysqli_real_escape_string($connection, $_POST['office_name']);
+    $entity_type = mysqli_real_escape_string($connection, $_POST['entity_type']);
     $license_number = mysqli_real_escape_string($connection, $_POST['license_number']);
     $notes = mysqli_real_escape_string($connection, $_POST['notes']);
 
     $office_name = strtoupper($office_name);
+    $entity_type = strtolower($entity_type);
     $license_number = strtoupper($license_number);
     $notes = strtoupper($notes);
 
 
     if ($option == 'i') {
-        if (empty($office_name) || empty($license_number)) {
+        if (empty($office_name) || empty($license_number) || empty($entity_type)) {
             $error_msg .= translate('error_some_required_data_is_missing', $lang);
         } else {
-            $query = "INSERT INTO sau_offices (office_name, license_number, notes, created_by) VALUES (?, ?, ?, ?)";
+            $query = "INSERT INTO sau_offices (office_name, entity_type, license_number, notes, created_by) VALUES (?, ?, ?, ?, ?)";
             $stmt = mysqli_prepare($connection, $query);
-            mysqli_stmt_bind_param($stmt, 'ssss', $office_name, $license_number, $notes, $user_full_name);
+            mysqli_stmt_bind_param($stmt, 'sssss', $office_name, $entity_type, $license_number, $notes, $user_full_name);
         }
     } else if ($option == 'u' && $id) {
-        if (empty($office_name) || empty($license_number)) {
+        if (empty($office_name) || empty($license_number) || empty($entity_type)) {
             $error_msg .= translate('error_some_required_data_is_missing', $lang);
         } else {
-            $query = "UPDATE sau_offices SET office_name = ?, license_number = ?, notes = ?, updated_by = ? WHERE id = ?";
+            $query = "UPDATE sau_offices SET office_name = ?, entity_type = ?, license_number = ?, notes = ?, updated_by = ? WHERE id = ?";
             $stmt = mysqli_prepare($connection, $query);
-            mysqli_stmt_bind_param($stmt, 'ssssi', $office_name, $license_number, $notes, $user_full_name, $id);
+            mysqli_stmt_bind_param($stmt, 'ssssii', $office_name, $entity_type, $license_number, $notes, $user_full_name, $id);
         }
     } else if ($option == 'd' && $id) {
         $check_query = "SELECT COUNT(id) AS related_sau_bills FROM sau_bills WHERE sau_office_id = ?";

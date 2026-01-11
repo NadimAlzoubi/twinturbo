@@ -1126,6 +1126,7 @@ $(document).ready(function () {
       success: function (data) {
         // تعبئة الحقول بالبيانات المسترجعة
         $("#office_name").val(data.office_name);
+        $("#entity_type").val(data.entity_type);
         $("#license_number").val(data.license_number);
         $("#notes").val(data.notes);
 
@@ -1164,6 +1165,7 @@ $(document).ready(function () {
             dataType: "json",
             data: {
               term: request.term,
+              lang: lang
             },
             success: function (data) {
               if (data.length === 0) {
@@ -1247,6 +1249,8 @@ $(document).ready(function () {
           data.sau_office_id +
           "- " +
           data.office_name +
+          " | " +
+          translate(data.entity_type, lang) +
           " | " +
           data.license_number;
         $("#sau_office_id").val(sauOfficeFormat);

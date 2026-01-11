@@ -60,6 +60,10 @@ if ($additionalData_input) {
     $additionalData = trim($additionalData_parts[0]);
 }
 
+$_POST['entity_type'] = null;
+$entity_type = null;
+$entity_type = $_POST['entity_type'] ;
+
 
 // بناء الاستعلام بناءً على نوع التقرير
 $query = "";
@@ -107,6 +111,7 @@ if ($reportType === 'trips') {
     $query = "SELECT 
                 b.*,
                 o.office_name, 
+                o.entity_type, 
                 o.license_number
             FROM sau_bills b
             LEFT JOIN sau_offices o ON b.sau_office_id = o.id
@@ -115,6 +120,11 @@ if ($reportType === 'trips') {
     if ($additionalData) {
         $query .= " AND b.sau_office_id = '$additionalData'";
     }
+
+    if($entity_type){
+        $query .= " AND o.entity_type = '$entity_type'";
+    }
+
 } elseif ($reportType === 'services') {
     $query = "SELECT services.*,
                 GROUP_CONCAT(service_fees.description SEPARATOR ', ') AS fee_description,
@@ -344,7 +354,7 @@ if ($reportType === 'sau_bills') {
         $content .= '<tr>
                         <td>' . $sau_bill['id'] . '</td>
                         <td>' . $sau_bill['bill_date'] . '</td>
-                        <td>' . $sau_bill['office_name'] . '</td>
+                        <td>' . $sau_bill['office_name'] . ' | (' . translate($sau_bill['entity_type'], $lang) . ')</td>
                         <td>' . $sau_bill['license_number'] . '</td>
                         <td>' . $sau_bill['sau_bill_number'] . '</td>
                         <td>' . $sau_bill['driver_name'] . '</td>

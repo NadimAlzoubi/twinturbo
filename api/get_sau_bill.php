@@ -17,6 +17,7 @@ function getRecordById($id) {
             b.price, 
             b.notes,
             o.office_name, 
+            o.entity_type,
             o.license_number
         FROM 
             sau_bills b

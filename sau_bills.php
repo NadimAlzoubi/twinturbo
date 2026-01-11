@@ -201,6 +201,16 @@ include_once('./header.php');
                 <input type="text" class="form-control" id="office_name" name="office_name" required>
             </div>
             <div class="form-group">
+                <label for="entity_type"><?php echo translate('entity_type', $lang); ?></label>
+                <select class="form-select" id="entity_type" name="entity_type" required>
+                    <option value="">-- <?php echo translate('choose', $lang); ?> --</option>
+                    <option value="office"><?php echo translate('office', $lang); ?></option>
+                    <option value="agent"><?php echo translate('agent', $lang); ?></option>
+                    <option value="shipper"><?php echo translate('shipper', $lang); ?></option>
+                    <option value="company"><?php echo translate('company', $lang); ?></option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="license_number"><?php echo translate('license_number', $lang); ?></label>
                 <input type="text" class="form-control" id="license_number" name="license_number" required>
             </div>
@@ -280,6 +290,7 @@ include_once('./header.php');
                             translate('updated_by', $lang) . ": {$updated_by}";
                     }
                     $extra_info_title = trim($extra_info_title);
+                    $entity_type = translate($sau_office['entity_type'], $lang);
                     echo "<tr>
                 <td>{$sau_office['id']}</td>
                 <td>
@@ -292,7 +303,7 @@ include_once('./header.php');
                     )
                         . "
                 </td>
-                <td>{$sau_office['office_name']}</td>
+                <td>{$sau_office['office_name']} | ({$entity_type})</td>
                 <td>{$sau_office['license_number']}</td>
                 <td>{$sau_office['notes']}</td>
             </tr>";

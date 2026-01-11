@@ -2,7 +2,7 @@
 include_once('../inc/connect.php');
 function getRecordById($id) {
     global $connection;
-    $query = "SELECT id, office_name, license_number, notes FROM sau_offices WHERE id = ?";
+    $query = "SELECT id, office_name, entity_type, license_number, notes FROM sau_offices WHERE id = ?";
     $stmt = mysqli_prepare($connection, $query);
     mysqli_stmt_bind_param($stmt, 'i', $id);
     mysqli_stmt_execute($stmt);

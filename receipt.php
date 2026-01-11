@@ -55,6 +55,7 @@ function getSauBillById($id) {
     $query = "SELECT 
             b.*,
             o.office_name, 
+            o.entity_type, 
             o.license_number
         FROM sau_bills b
         LEFT JOIN sau_offices o ON b.sau_office_id = o.id
@@ -205,7 +206,7 @@ if ($formType == 'rid') {
         $bill_price += (float) $bill['price'];
 
             
-        $items[] = [$bill['office_name'], $bill['license_number'], $bill['nob'], $bill['price']];
+        $items[] = [$bill['office_name'], $bill['license_number'], $bill['nob'], $bill['price'], $bill['entity_type']];
     }
 }
 
@@ -218,7 +219,7 @@ $pdf->SetFillColor(255, 255, 255);
 if ($formType == 'rid') {
     $pdf->Cell(120, 7, 'Description', 1, 0, 'C', 1);
 } elseif($formType == 'bid') {
-    $pdf->Cell(120, 7, 'Saudi Office', 1, 0, 'C', 1);
+    $pdf->Cell(120, 7, 'Related Entity ('.$items[0][4].')', 1, 0, 'C', 1);
 }
 $pdf->Cell(20, 7, 'Qty', 1, 0, 'C', 1);
 $pdf->Cell(30, 7, 'Amount', 1, 1, 'C', 1);
