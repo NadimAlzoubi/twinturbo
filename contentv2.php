@@ -60,9 +60,8 @@ if ($additionalData_input) {
     $additionalData = trim($additionalData_parts[0]);
 }
 
-$_POST['entity_type'] = null;
-$entity_type = null;
-$entity_type = $_POST['entity_type'] ;
+
+$entity_type = $_POST['entity_type'] ?? null;
 
 
 // بناء الاستعلام بناءً على نوع التقرير
@@ -121,7 +120,7 @@ if ($reportType === 'trips') {
         $query .= " AND b.sau_office_id = '$additionalData'";
     }
 
-    if($entity_type){
+    if($entity_type != null){
         $query .= " AND o.entity_type = '$entity_type'";
     }
 
@@ -196,7 +195,7 @@ if ($reportType === 'trips') {
     }
     $query .= " GROUP BY invoices.id";
 }
-$content = '';
+$content = $query;
 
 if (empty($reportType) || $errormsg != null) {
     $content = '<h1>Error!</h1>';
