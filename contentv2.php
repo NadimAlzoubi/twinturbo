@@ -195,7 +195,7 @@ if ($reportType === 'trips') {
     }
     $query .= " GROUP BY invoices.id";
 }
-$content = $query;
+$content = '';
 
 if (empty($reportType) || $errormsg != null) {
     $content = '<h1>Error!</h1>';
