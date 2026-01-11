@@ -99,12 +99,12 @@ if ($invoiceID) {
     
     $stamp = ''; // قيمة افتراضية
     if (isset($queryParts[0]) && $queryParts[0] == "estamp=on") {
-        $stamp = '<img src="./vendor/' . $estamp . '" style="width: 3cm;" />';
+        $stamp = '<img src="./img/' . $estamp . '" style="width: 3cm;" />';
     }
 
 
     // if ($queryParts[0] == "estamp=on") {
-    //     $stamp = '<img src="./vendor/' . $estamp . '" style="width: 3cm;" />';
+    //     $stamp = '<img src="./img/' . $estamp . '" style="width: 3cm;" />';
     // }
 
     $result = getInvoiceById($invoiceID);
@@ -115,7 +115,7 @@ if ($invoiceID) {
 
 
         // Set the watermark image
-        $watermarkImage = './vendor/' . $logo; // Replace with the path to your watermark image
+        $watermarkImage = './img/' . $logo; // Replace with the path to your watermark image
         $mpdf->SetWatermarkImage($watermarkImage);
 
         // Optional: Adjust watermark opacity
@@ -242,7 +242,7 @@ if ($invoiceID) {
                     <br />
 
                     <td style="width: 33%; text-align: center;">
-                        <img src="./vendor/' . $logo . '" style="width: 200px;" />
+                        <img src="./img/' . $logo . '" style="width: 200px;" />
                     </td>
                     <br />
 

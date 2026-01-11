@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Site Maintenance</title>
-  <link rel="icon" href="./vendor/warning.svg" type="image/x-icon">
+  <link rel="icon" href="./img/warning.svg" type="image/x-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
@@ -98,14 +98,14 @@
   <div class="container">
     <div class="cn">
       <div class="column ltr">
-        <img src="./vendor/warning.svg" alt="Maintenance Icon">
+        <img src="./img/warning.svg" alt="Maintenance Icon">
         <h1>We&rsquo;ll be back soon!</h1>
         <p>We apologize for the inconvenience.<br>
           We are currently undergoing maintenance to enhance our service. If you require assistance,
           please feel free to reach out to us via <a href="mailto:nadim.alzoubi.99@gmail.com">Email</a> for updates. Otherwise, we will be back online shortly!</p>
       </div>
       <div class="column rtl">
-        <img src="./vendor/warning.svg" alt="Maintenance Icon">
+        <img src="./img/warning.svg" alt="Maintenance Icon">
         <h1>سنعود قريباً!</h1>
         <p>نعتذر عن الإزعاج.<br> نحن حالياً في عملية صيانة لتحسين خدمتنا. إذا كنت بحاجة للمساعدة،
           يمكنك دائمًا التواصل معنا عبر <a href="mailto:nadim.alzoubi.99@gmail.com">البريد الإلكتروني</a> للحصول على التحديثات، وإلا سنعود قريبًا!</p>

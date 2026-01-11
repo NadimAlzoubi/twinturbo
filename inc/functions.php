@@ -2554,7 +2554,7 @@ function pdfFileFormat($option, $id)
             if (!in_array($fileExtension, $allowedExtensions)) {
                 $error_msg .= 'Error: Invalid file format. Please upload an image file (jpg, jpeg, png, gif).';
             } else {
-                $uploadDirectory = './vendor/';
+                $uploadDirectory = './img/';
                 if (!move_uploaded_file($logo['tmp_name'], $uploadDirectory . $logo['name'])) {
                     $error_msg .= 'Error: Failed to move the uploaded file.';
                 }
@@ -2566,7 +2566,7 @@ function pdfFileFormat($option, $id)
             if (!in_array($fileExtension, $allowedExtensions)) {
                 $error_msg .= 'Error: Invalid file format. Please upload an image file (jpg, jpeg, png, gif).';
             } else {
-                $uploadDirectory = './vendor/';
+                $uploadDirectory = './img/';
                 if (!move_uploaded_file($stamp['tmp_name'], $uploadDirectory . $stamp['name'])) {
                     $error_msg .= 'Error: Failed to move the uploaded file.';
                 }
