@@ -2,7 +2,3 @@
 return [
     'underMaintenance' => false
 ];
-
-
-
-
