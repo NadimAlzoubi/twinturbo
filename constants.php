@@ -2,7 +2,7 @@
 // Define a class
 class NadimData {
     // Properties
-    public $next_version = '1.2.0';
+    public $next_version = '1.2.1';
     public $name = 'Nadim Al-Zoubi';
     public $website_link = 'https://nadim.pro';
     public $website = 'www.Nadim.pro';
