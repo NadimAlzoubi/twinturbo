@@ -1264,6 +1264,7 @@ $(document).ready(function () {
         $("#nov").val(data.nov);
         $("#destination").val(data.destination);
         $("#price").val(data.price);
+        $("#payment_status").val(data.payment_status);
         $("#notes").val(data.notes);
 
         $("#insert-sau-bill-btn").hide();
@@ -1551,6 +1552,7 @@ $(document).ready(function () {
         $("#nov").val(data.nov);
         $("#notes").val(data.notes);
         $("#service_date").val(data.service_date);
+        $("#payment_status").val(data.payment_status);
         $("#phone_number").val(data.phone_number);
 
         $("#insert-service-btn").hide();

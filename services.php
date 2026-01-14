@@ -15,6 +15,14 @@ include_once('./header.php');
                 <input type="date" class="form-control" id="service_date" name="service_date" required>
             </div>
             <div class="form-group">
+                <label for="payment_status"><?php echo translate('payment_status', $lang); ?></label>
+                <select class="form-select" id="payment_status" name="payment_status" required>
+                    <option value="cash"><?php echo translate('cash', $lang); ?></option>
+                    <option value="credit"><?php echo translate('credit', $lang); ?></option>
+                    <option value="transfer"><?php echo translate('transfer', $lang); ?></option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="driver_name"><?php echo translate('driver_name', $lang); ?></label>
                 <input type="text" class="form-control" id="driver_name" name="driver_name" required>
             </div>
@@ -117,6 +125,7 @@ include_once('./header.php');
                     <th><?php echo translate('id', $lang); ?></th>
                     <th><?php echo translate('action', $lang); ?></th>
                     <th><?php echo translate('service_date', $lang); ?></th>
+                    <th><?php echo translate('payment_status', $lang); ?></th>
                     <th><?php echo translate('driver_name', $lang); ?></th>
                     <th><?php echo translate('phone_number', $lang); ?></th>
                     <th><?php echo translate('fees_details', $lang); ?></th>
@@ -199,6 +208,9 @@ include_once('./header.php');
                         }
                     }
 
+                    $payment_status = translate($service['payment_status'], $lang);
+                    $color = ['cash' => 'success', 'credit' => 'warning', 'transfer' => 'info'];
+
                     echo "<tr>
                     <td>{$service['id']}</td>
                     <td>
@@ -213,6 +225,7 @@ include_once('./header.php');
                         <a href='./receipt.php?{$print_encrypted_text}' target='_blank' class='btn btn-success btn-sm' title='Print'><i class='fas fa-print'></i></a>
                     </td>
                     <td>{$service['service_date']}</td>
+                    <td class='bg-{$color[$service['payment_status']]}'>{$payment_status}</td>
                     <td>{$service['driver_name']} | {$service['vehicle_number']}</td>
                     <td>{$service['phone_number']}</td>
                     <td>{$fee_details}</td>

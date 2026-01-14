@@ -62,6 +62,8 @@ if ($additionalData_input) {
 
 
 $entity_type = $_POST['entity_type'] ?? null;
+$payment_status_bills = $_POST['payment_status'] ?? null;
+$payment_status_services = $_POST['payment_status'] ?? null;
 
 
 // بناء الاستعلام بناءً على نوع التقرير
@@ -124,6 +126,10 @@ if ($reportType === 'trips') {
         $query .= " AND o.entity_type = '$entity_type'";
     }
 
+    if($payment_status_bills != null){
+        $query .= " AND b.payment_status = '$payment_status_bills'";
+    }
+
 } elseif ($reportType === 'services') {
     $query = "SELECT services.*,
                 GROUP_CONCAT(service_fees.description SEPARATOR ', ') AS fee_description,
@@ -139,6 +145,10 @@ if ($reportType === 'trips') {
 
     if ($additionalData) {
         $query .= " AND service_fees.service_fee_type_id = '$additionalData'";
+    }
+
+    if($payment_status_services != null){
+        $query .= " AND services.payment_status = '$payment_status_services'";
     }
 
     $query .= " GROUP BY services.id";

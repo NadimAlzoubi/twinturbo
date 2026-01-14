@@ -69,19 +69,42 @@ include_once('./header.php');
                             echo '<div class="form-group mt-4">
                                     <label class="form-check-label" style="font-weight: bold;">' . translate('entity_type', $lang) . '</label>
                                     <div style="margin-bottom: 10px; display: flex; gap: 10px;">
-                                        <label class="form-check-label" for="entity_type">' . translate('office', $lang) . '</label>
-                                        <input type="radio" class="form-check-input" id="entity_type" name="entity_type" value="office">
-                                        <label class="form-check-label" for="entity_type">' . translate('agent', $lang) . '</label>
-                                        <input type="radio" class="form-check-input" id="entity_type" name="entity_type" value="agent">
-                                        <label class="form-check-label" for="entity_type">' . translate('shipper', $lang) . '</label>
-                                        <input type="radio" class="form-check-input" id="entity_type" name="entity_type" value="shipper">
-                                        <label class="form-check-label" for="entity_type">' . translate('company', $lang) . '</label>
-                                        <input type="radio" class="form-check-input" id="entity_type" name="entity_type" value="company">
+                                        <label class="form-check-label" for="entity_type1">' . translate('office', $lang) . '</label>
+                                        <input type="radio" class="form-check-input" id="entity_type1" name="entity_type" value="office">
+                                        <label class="form-check-label" for="entity_type2">' . translate('agent', $lang) . '</label>
+                                        <input type="radio" class="form-check-input" id="entity_type2" name="entity_type" value="agent">
+                                        <label class="form-check-label" for="entity_type3">' . translate('shipper', $lang) . '</label>
+                                        <input type="radio" class="form-check-input" id="entity_type3" name="entity_type" value="shipper">
+                                        <label class="form-check-label" for="entity_type4">' . translate('company', $lang) . '</label>
+                                        <input type="radio" class="form-check-input" id="entity_type4" name="entity_type" value="company">
+                                    </div>
+                            </div>';
+                            echo '<div class="form-group mt-4">
+                                    <label class="form-check-label" style="font-weight: bold;">' . translate('payment_status', $lang) . '</label>
+                                    <div style="margin-bottom: 10px; display: flex; gap: 10px;">
+                                        <label class="form-check-label" for="payment_status1">' . translate('cash', $lang) . '</label>
+                                        <input type="radio" class="form-check-input" id="payment_status1" name="payment_status" value="cash">
+                                        <label class="form-check-label" for="payment_status2">' . translate('credit', $lang) . '</label>
+                                        <input type="radio" class="form-check-input" id="payment_status2" name="payment_status" value="credit">
+                                        <label class="form-check-label" for="payment_status3">' . translate('transfer', $lang) . '</label>
+                                        <input type="radio" class="form-check-input" id="payment_status3" name="payment_status" value="transfer">
                                     </div>
                             </div>';
                         } elseif ($reportType == 'services') {
                             echo '<label for="service_fee_type_id">' . translate('service_fee_type_id', $lang) . '</label>';
                             echo '<input type="text" class="form-control trip_fee_type_id" id="service_fee_type_id" name="service_fee_type_id" placeholder="' . translate('type_to_search', $lang) . '...">';
+
+                            echo '<div class="form-group mt-4">
+                                    <label class="form-check-label" style="font-weight: bold;">' . translate('payment_status', $lang) . '</label>
+                                    <div style="margin-bottom: 10px; display: flex; gap: 10px;">
+                                        <label class="form-check-label" for="payment_status1">' . translate('cash', $lang) . '</label>
+                                        <input type="radio" class="form-check-input" id="payment_status1" name="payment_status" value="cash">
+                                        <label class="form-check-label" for="payment_status2">' . translate('credit', $lang) . '</label>
+                                        <input type="radio" class="form-check-input" id="payment_status2" name="payment_status" value="credit">
+                                        <label class="form-check-label" for="payment_status3">' . translate('transfer', $lang) . '</label>
+                                        <input type="radio" class="form-check-input" id="payment_status3" name="payment_status" value="transfer">
+                                    </div>
+                            </div>';
                         } elseif ($reportType == 'expenses') {
                             echo '<label for="expense_type_id">' . translate('expense_type_id', $lang) . '</label>';
                             echo '<input type="text" class="form-control" id="expense_type_id" name="expense_type_id" placeholder="' . translate('type_to_search', $lang) . '...">';

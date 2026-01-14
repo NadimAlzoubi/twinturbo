@@ -51,6 +51,15 @@ include_once('./header.php');
                 <input type="number" min="0" step="0.01" class="form-control" id="price" name="price" required>
             </div>
             <div class="form-group">
+                <label for="payment_status"><?php echo translate('payment_status', $lang); ?></label>
+                <select class="form-select" id="payment_status" name="payment_status" required>
+                    <option value="cash"><?php echo translate('cash', $lang); ?></option>
+                    <option value="credit"><?php echo translate('credit', $lang); ?></option>
+                    <option value="transfer"><?php echo translate('transfer', $lang); ?></option>
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label for="notes"><?php echo translate('notes', $lang); ?>
                     <?php echo translate('optional', $lang); ?></label>
                 <input class="form-control" id="notes" name="notes">
@@ -100,6 +109,7 @@ include_once('./header.php');
                     <th><?php echo translate('id', $lang); ?></th>
                     <th><?php echo translate('action', $lang); ?></th>
                     <th><?php echo translate('bill_date', $lang); ?></th>
+                    <th><?php echo translate('payment_status', $lang); ?></th>
                     <th><?php echo translate('office_name', $lang); ?></th>
                     <th><?php echo translate('license_number', $lang); ?></th>
                     <th><?php echo translate('bill_number', $lang); ?></th>
@@ -143,6 +153,9 @@ include_once('./header.php');
                             translate('updated_by', $lang) . ": {$updated_by}";
                     }
                     $extra_info_title = trim($extra_info_title);
+                    $payment_status = translate($sau_bill['payment_status'], $lang);
+                    $color = ['cash' => 'success', 'credit' => 'warning', 'transfer' => 'info'];
+                    
                     echo "<tr>
                 <td>{$sau_bill['id']}</td>
                 <td>
@@ -157,6 +170,7 @@ include_once('./header.php');
                     <a href='./receipt.php?{$print_encrypted_text}' target='_blank' class='btn btn-success btn-sm' title='Print'><i class='fas fa-print'></i></a>
                 </td>
                 <td>{$sau_bill['bill_date']}</td>
+                <td class='bg-{$color[$sau_bill['payment_status']]}'>{$payment_status}</td>
                 <td>{$sau_bill['office_name']}</td>
                 <td>{$sau_bill['license_number']}</td>
                 <td>{$sau_bill['sau_bill_number']}</td>

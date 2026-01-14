@@ -977,6 +977,7 @@ function sauBills($option, $id = null)
     $driver_name = mysqli_real_escape_string($connection, $_POST['driver_name']);
     $sau_bill_number = mysqli_real_escape_string($connection, $_POST['sau_bill_number']);
     $price = mysqli_real_escape_string($connection, $_POST['price']);
+    $payment_status = mysqli_real_escape_string($connection, $_POST['payment_status']);
     $bill_date = mysqli_real_escape_string($connection, $_POST['bill_date']);
     $vehicle_number = mysqli_real_escape_string($connection, $_POST['vehicle_number']);
     $destination = mysqli_real_escape_string($connection, $_POST['destination']);
@@ -994,18 +995,18 @@ function sauBills($option, $id = null)
         if (empty($sau_office_id) || empty($driver_name) || empty($sau_bill_number) || empty($bill_date) || empty($price) || empty($vehicle_number) || empty($nob) || empty($nov) || empty($destination)) {
             $error_msg .= translate('error_some_required_data_is_missing', $lang);
         } else {
-            $query = "INSERT INTO sau_bills (bill_date, sau_office_id, sau_bill_number, driver_name, vehicle_number, nob, nov, destination, price, notes, created_by) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO sau_bills (bill_date, sau_office_id, sau_bill_number, driver_name, vehicle_number, nob, nov, destination, price, payment_status, notes, created_by) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = mysqli_prepare($connection, $query);
-            mysqli_stmt_bind_param($stmt, 'sisssiisdss', $bill_date, $sau_office_id, $sau_bill_number, $driver_name, $vehicle_number, $nob, $nov, $destination, $price, $notes, $user_full_name);
+            mysqli_stmt_bind_param($stmt, 'sisssiisdsss', $bill_date, $sau_office_id, $sau_bill_number, $driver_name, $vehicle_number, $nob, $nov, $destination, $price, $payment_status, $notes, $user_full_name);
         }
     } else if ($option == 'u' && $id) {
         if (empty($sau_office_id) || empty($driver_name) || empty($sau_bill_number) || empty($bill_date) || empty($price) || empty($vehicle_number) || empty($nob) || empty($nov) || empty($destination)) {
             $error_msg .= translate('error_some_required_data_is_missing', $lang);
         } else {
-            $query = "UPDATE sau_bills SET bill_date = ?, sau_office_id = ?, sau_bill_number = ?, driver_name = ?, vehicle_number = ?, nob = ?, nov = ?, destination = ?, price = ?, notes = ?, updated_by = ? WHERE id = ?";
+            $query = "UPDATE sau_bills SET bill_date = ?, sau_office_id = ?, sau_bill_number = ?, driver_name = ?, vehicle_number = ?, nob = ?, nov = ?, destination = ?, price = ?, payment_status = ?, notes = ?, updated_by = ? WHERE id = ?";
             $stmt = mysqli_prepare($connection, $query);
-            mysqli_stmt_bind_param($stmt, 'sisssiisdssi', $bill_date, $sau_office_id, $sau_bill_number, $driver_name, $vehicle_number, $nob, $nov, $destination, $price, $notes, $user_full_name, $id);
+            mysqli_stmt_bind_param($stmt, 'sisssiisdsssi', $bill_date, $sau_office_id, $sau_bill_number, $driver_name, $vehicle_number, $nob, $nov, $destination, $price, $payment_status, $notes, $user_full_name, $id);
         }
     } else if ($option == 'd' && $id) {
         $query = "DELETE FROM sau_bills WHERE id = ?";
@@ -1355,6 +1356,7 @@ function services($option, $id = null)
     $vehicle_number = strtoupper(mysqli_real_escape_string($connection, $_POST['vehicle_number']));
     $notes = mysqli_real_escape_string($connection, $_POST['notes']);
     $service_date = mysqli_real_escape_string($connection, $_POST['service_date']);
+    $payment_status = mysqli_real_escape_string($connection, $_POST['payment_status']);
     $phone_number = strtoupper(mysqli_real_escape_string($connection, $_POST['phone_number']));
     $nov = mysqli_real_escape_string($connection, $_POST['nov']);
 
@@ -1399,9 +1401,9 @@ function services($option, $id = null)
             $error_msg .= translate('error_some_required_data_is_missing', $lang);
         } else {
             // إدخال بيانات الرحلة
-            $query = "INSERT INTO services(service_date, driver_name, vehicle_number, nov, phone_number, notes, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO services(service_date, payment_status, driver_name, vehicle_number, nov, phone_number, notes, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = mysqli_prepare($connection, $query);
-            mysqli_stmt_bind_param($stmt, 'sssisss', $service_date, $driver_name, $vehicle_number, $nov, $phone_number, $notes, $user_full_name);
+            mysqli_stmt_bind_param($stmt, 'ssssisss', $service_date, $payment_status, $driver_name, $vehicle_number, $nov, $phone_number, $notes, $user_full_name);
 
             if (mysqli_stmt_execute($stmt)) {
                 $service_id = mysqli_insert_id($connection);  // الحصول على ID الرحلة المدخلة
@@ -1439,9 +1441,9 @@ function services($option, $id = null)
             $error_msg .= translate('error_some_required_data_is_missing', $lang);
         } else {
             // تحديث بيانات الرحلة
-            $query = "UPDATE services SET service_date = ?, driver_name = ?, vehicle_number = ?, nov = ?, phone_number = ?, notes = ?, updated_by = ? WHERE id = ?";
+            $query = "UPDATE services SET service_date = ?, payment_status = ?, driver_name = ?, vehicle_number = ?, nov = ?, phone_number = ?, notes = ?, updated_by = ? WHERE id = ?";
             $stmt = mysqli_prepare($connection, $query);
-            mysqli_stmt_bind_param($stmt, 'sssisssi', $service_date, $driver_name, $vehicle_number, $nov, $phone_number, $notes, $user_full_name, $id);
+            mysqli_stmt_bind_param($stmt, 'ssssisssi', $service_date, $payment_status, $driver_name, $vehicle_number, $nov, $phone_number, $notes, $user_full_name, $id);
 
             if (mysqli_stmt_execute($stmt)) {
 
