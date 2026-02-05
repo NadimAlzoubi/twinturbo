@@ -144,15 +144,6 @@ body.dark-mode .header p {
     color: #cccccc !important;
 }
 
-/* أنماط لأزرار التفعيل */
-body.dark-mode .toggle-btn {
-    background-color: #007bff !important;
-    color: #ffffff !important;
-}
-
-body.dark-mode .toggle-btn:hover {
-    background-color: #0056b3 !important;
-}
 
 body.dark-mode #pdf-table thead tr th, body.dark-mode #pdf-table tbody tr td, body.dark-mode table tbody tr td, body.dark-mode table thead tr th, body.dark-mode table tfoot tr th{
     background-color: #333;

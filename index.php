@@ -100,10 +100,11 @@ $totalBankDeductionAmount = $totalServicesBankAmount + $totalExpensesBankAmount 
                     <div class="card-title">
                         <?php echo translate('bank_account', $lang); ?>
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                    <?php echo translate('balance', $lang) . ': '?><p id="bank-home-page" class="card-text" style="color: #00c800; margin-bottom: 0;"></p>
+                    <div class="card-text d-flex align-items-center gap-2 account_amount">
+                    <?php //echo translate('main', $lang) . ': '?>
+                    <!-- <p id="bank-home-page" class="card-text" style="color: #00c800; margin-bottom: 0;"></p>
                         | 
-                    <p class="card-text" style="color: red; margin-bottom: 0;"><?php echo translate('bank_deduction', $lang) . ': -' . $totalBankDeductionAmount; ?></p>
+                    <p class="card-text" style="color: red; margin-bottom: 0;"><?php //echo translate('bank_deduction', $lang) . ': -' . $totalBankDeductionAmount; ?></p> -->
                     </div>
                 </div>
             </div>

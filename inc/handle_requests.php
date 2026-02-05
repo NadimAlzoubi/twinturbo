@@ -296,6 +296,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-service'])) {
 
 
 
+// services req------------------
+function handleServiceRequestRequests($action, $id = null)
+{
+    switch ($action) {
+        case 'i':
+            serviceRequests('i', null);
+            break;
+        case 'u':
+            if ($id) {
+                serviceRequests('u', $id);
+            }
+            break;
+        case 'd':
+            if ($id) {
+                serviceRequests('d', $id);
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['insert-service-request'])) {
+    handleServiceRequestRequests('i');
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update-service-request']) && isset($_GET['service-request-uid']) && is_numeric($_GET['service-request-uid'])) {
+    handleServiceRequestRequests('u', $_GET['service-request-uid']);
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['service-request-did']) && is_numeric($_GET['service-request-did'])) {
+    handleServiceRequestRequests('d', $_GET['service-request-did']);
+}
+
+
+
 
 
 

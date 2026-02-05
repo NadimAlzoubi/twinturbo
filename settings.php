@@ -9,7 +9,7 @@ if ($_SESSION["sau_user_role"] != 'admin') {
     <title><?php echo translate('settings', $lang) . ' - ' . $translated_user_role; ?></title>
 </head>
 
-<div class="container mt-5">
+<div class="container">
 
     <!-- Form to Add New User -->
     <h2 class="mb-4 mt-5"><?php echo translate('add_user', $lang); ?></h2>

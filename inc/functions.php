@@ -1105,6 +1105,38 @@ function getAllServices($limit = null)
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
+
+// ----------------الحصول على كامل طلبات الخدمات----------------
+function getAllServiceRequests($limit = null)
+{
+    global $connection;
+
+    $query = "SELECT 
+            service_requests.*,
+            service_fees_types.fee_name     AS service_type_name,
+            drivers.driver_name             AS driver_name,
+            drivers.vehicle_number          AS driver_vehicle_number,
+            shippers.name                   AS shipper_name,
+            shippers.office_name            AS shipper_office_name,
+            users.full_name                 AS user_name
+        FROM service_requests
+        LEFT JOIN service_fees_types  ON service_requests.service_type_id  = service_fees_types.id
+        LEFT JOIN drivers  ON service_requests.driver_id  = drivers.id
+        LEFT JOIN shippers ON service_requests.shipper_id = shippers.id
+        LEFT JOIN users    ON service_requests.user_id    = users.id
+        ORDER BY service_requests.id DESC
+    ";
+
+    if ($limit !== null) {
+        $query .= " LIMIT " . intval($limit);
+    }
+
+    $result = mysqli_query($connection, $query);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+
+
 // ----------------الحصول على كامل انواع رسوم الخدمات----------------
 function getServiceFeesTypes($limit = null)
 {
@@ -1343,7 +1375,7 @@ function updateBankExpenses($op, $n, $f, $new_amount, $old_amount = null)
 }
 
 
-// ------------ العمليات على الرحلات والمصاريف----------
+// ------------ العمليات على الخدمات----------
 function services($option, $id = null)
 {
     global $connection;
@@ -1509,7 +1541,7 @@ function services($option, $id = null)
             }
         }
     } else if ($option == 'd' && $id) {
-        // حذف الرحلة والمصاريف المرتبطة بها
+        // حذف الخدمة والمصاريف المرتبطة بها
         $query = "DELETE FROM service_fees WHERE service_id = ?";
         $stmt = mysqli_prepare($connection, $query);
         mysqli_stmt_bind_param($stmt, 'i', $id);
@@ -1549,6 +1581,132 @@ function services($option, $id = null)
         </script>';
     }
 }
+
+
+
+
+
+
+
+
+
+// ------------ العمليات على طلبات الخدمات----------
+function serviceRequests($option, $id = null)
+{
+    global $connection;
+    global $lang;
+    global $user_full_name;
+    $error_msg = null;
+
+    $service_type = mysqli_real_escape_string($connection, $_POST['service_type']);
+    $service_type = explode('-', $service_type);
+    $service_type = trim($service_type[0]);
+    $driver_id = strtoupper(mysqli_real_escape_string($connection, $_POST['driver_id']));
+    $driver_id = explode('-', $driver_id);
+    $driver_id = trim($driver_id[0]);
+    $user_id = mysqli_real_escape_string($connection, $_POST['user_id']);
+    $user_id = explode('-', $user_id);
+    $user_id = trim($user_id[0]);
+    $shipper_id = mysqli_real_escape_string($connection, $_POST['shipper_id']);
+    $shipper_id = explode('-', $shipper_id);
+    $shipper_id = trim($shipper_id[0]);
+    $status = 'pending';
+    $notes = mysqli_real_escape_string($connection, $_POST['notes']);
+    $declaration_number = null;
+    $locked_by_user_id = null;
+
+    if ($option == 'i') {
+        if (empty($service_type) || empty($driver_id) || empty($user_id)) {
+            $error_msg .= translate('error_some_required_data_is_missing', $lang);
+        } else {
+            $query = "INSERT INTO service_requests(service_type_id, driver_id, user_id, shipper_id, status, notes, declaration_number, locked_by_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = mysqli_prepare($connection, $query);
+            mysqli_stmt_bind_param($stmt, 'iiiisssi', $service_type, $driver_id, $user_id, $shipper_id, $status, $notes, $declaration_number, $locked_by_user_id);
+
+            if (mysqli_stmt_execute($stmt)) {
+                echo '<script>
+                    Swal.fire({
+                        icon: "success",
+                        title: "' . translate('saved_successfully', $lang) . '",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.href = window.location.href;
+                    });
+                </script>';
+            } else {
+                $error_msg = translate('error_could_not_insert_the_record', $lang);
+            }
+        }
+    } else if ($option == 'u' && $id) {
+        if (empty($service_type) || empty($driver_id) || empty($user_id)) {
+            $error_msg .= translate('error_some_required_data_is_missing', $lang);
+        } else {
+            $query = "UPDATE service_requests SET service_type_id = ?, driver_id = ?, user_id = ?, shipper_id = ?, status = ?, notes = ?, declaration_number = ?, locked_by_user_id = ? WHERE id = ?";
+            $stmt = mysqli_prepare($connection, $query);
+            mysqli_stmt_bind_param($stmt, 'iiiisssii', $service_type, $driver_id, $user_id, $shipper_id, $status, $notes, $declaration_number, $locked_by_user_id, $id);
+
+            if (mysqli_stmt_execute($stmt)) {
+                echo '<script>
+                    Swal.fire({
+                        icon: "success",
+                        title: "' . translate('updated_successfully', $lang) . '",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.href = "./service-request.php";
+                    });
+                </script>';
+            } else {
+                $error_msg = translate('error_could_not_update_the_record', $lang);
+            }
+        }
+    } else if ($option == 'd' && $id) {
+        $query = "DELETE FROM service_requests WHERE id = ?";
+        $stmt = mysqli_prepare($connection, $query);
+        mysqli_stmt_bind_param($stmt, 'i', $id);
+
+        if (mysqli_stmt_execute($stmt)) {
+            echo '<script>
+                Swal.fire({
+                    icon: "success",
+                    title: "' . translate('deleted_successfully', $lang) . '",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.href = "./service-request.php";
+                });
+            </script>';
+        } else {
+            $error_msg = translate('error_could_not_delete_the_record', $lang);
+        }
+    }
+
+    // إذا كان هناك خطأ، اعرض رسالة الخطأ
+    if ($error_msg != null) {
+        echo '<script>
+            Swal.fire({
+                icon: "error",
+                title: "' . translate('error', $lang) . '",
+                text: "' . $error_msg . '"
+            }).then(() => {
+                window.location.href = "./service-request.php";
+            });
+        </script>';
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ----------------الحصول على انواع المصاريف----------------
 function getAllExpensesTypes($limit = null)

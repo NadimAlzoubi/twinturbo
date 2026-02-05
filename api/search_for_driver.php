@@ -3,7 +3,7 @@ include('../inc/connect.php');
 
 if (isset($_GET['term'])) {
     $term = '%' . $_GET['term'] . '%';
-    $stmt = $connection->prepare("SELECT id, driver_name, vehicle_number FROM drivers WHERE driver_name LIKE ? OR vehicle_number LIKE ? OR id LIKE ? LIMIT 10");
+    $stmt = $connection->prepare("SELECT id, driver_name, vehicle_number, uae_id, passport_number FROM drivers WHERE driver_name LIKE ? OR vehicle_number LIKE ? OR id LIKE ? LIMIT 10");
     $stmt->bind_param("sss", $term, $term, $term);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -12,7 +12,11 @@ if (isset($_GET['term'])) {
     while ($row = $result->fetch_assoc()) {
         $customers[] = [
             'value' => $row['id'],
-            'label' =>  $row['id'] . '- ' . $row['driver_name'] . ' | ' . $row['vehicle_number']
+            'label' =>  $row['id'] . '- ' . $row['driver_name'] . ' | ' . $row['vehicle_number'],
+            'hidden_values' => [
+                'uae_id' => $row['uae_id'],
+                'passport_number' => $row['passport_number']
+            ]
         ];
     }
     echo json_encode($customers);

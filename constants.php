@@ -2,7 +2,7 @@
 // Define a class
 class NadimData {
     // Properties
-    public $next_version = '1.2.1';
+    public $next_version;
     public $name = 'Nadim Al-Zoubi';
     public $website_link = 'https://nadim.pro';
     public $website = 'www.Nadim.pro';
@@ -12,6 +12,11 @@ class NadimData {
     public $phone2 = '+971 56 863 1237';
     public $email1 = 'info@nadim.pro';
     public $email2 = 'nadim.alzoubi.99@gmail.com';
+
+    public function __construct() {
+        // $this->next_version = time(); // تايم ستامب لحظة الإنشاء
+        $this->next_version = "2.0.1"; // تايم ستامب لحظة الإنشاء
+    }
 }
 // Instantiate the class to create an object
 $nadim = new NadimData;

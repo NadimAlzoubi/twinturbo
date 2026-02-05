@@ -14,7 +14,7 @@ include_once('./header.php');
 
 
 
-<div class="container mt-5">
+<div class="container">
     <h2 class="mb-4"><?php echo translate('add_expense', $lang); ?></h2>
     <form method="post">
         <div class="form-container">

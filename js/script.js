@@ -1,9 +1,8 @@
-// تعريف دالة الترجمة في JavaScript
 function translate(key, lang = "en") {
   return window.translations[lang][key] || key;
 }
-var lang = window.lang; // الحصول على اللغة الحالية
 
+var lang = window.lang;
 function arabicToEnglishNumbers(input) {
   const arabicNumbers = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
   const englishNumbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -21,17 +20,12 @@ function convertInputToEnglish(event) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  const numberInputs = document.querySelectorAll(
-    'input[type="number"], input[type="text"], input[type="date"]'
-  );
+  const numberInputs = document.querySelectorAll('input[type="number"], input[type="text"], input[type="date"]');
   numberInputs.forEach(function (input) {
     input.addEventListener("input", convertInputToEnglish);
   });
 });
 
-/////////////////////////////////////////////////////
-
-// lang
 function toggleLanguage() {
   let url = new URL(window.location.href);
   let currentLang = url.searchParams.get("lang");
@@ -46,13 +40,76 @@ function toggleLanguage() {
   location.reload();
 }
 
-// If no language is selected in local storage, default to "ar"
+function toggleCollapsed(sidebar) {
+  let url = new URL(window.location.href);
+  let currentCollapsed = url.searchParams.get("collapsed");
+  // Toggle between "true" and "false"
+  let newCollapsed = currentCollapsed === "false" ? "true" : "false";
+  // Update the URL with the new collapsed
+  url.searchParams.set("collapsed", newCollapsed);
+  window.history.replaceState({}, document.title, url.toString());
+  // Store the selected collapsed in local storage
+  localStorage.setItem("collapsed", newCollapsed);
+  document.cookie = `collapsed=${newCollapsed}; expires=Wed, 31 Dec 2099 23:59:59 UTC; path=/`;
+  // sidebar.classList.toggle('collapsed');
+
+  location.reload();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  /* ========== SIDEBAR ========== */
+  const sidebar = document.getElementById("sidebar");
+  const toggleBtn = document.getElementById("toggleBtn");
+  const title = document.getElementById("sidebarTitle");
+  const toolsToggle = document.getElementById("toolsToggle");
+  const toolsMenu = document.getElementById("toolsMenu");
+  const menu = document.getElementById("menu");
+  const links = menu.querySelectorAll("a");
+
+  function updateToggleUI() {
+    if (!sidebar || !toggleBtn) return;
+
+    const isCollapsed = sidebar.classList.contains("collapsed");
+    toggleBtn.textContent = isCollapsed ? "☰" : "✖";
+    toggleBtn.style.margin = isCollapsed ? "auto" : "";
+
+    links.forEach((link) => {
+      link.style.margin = isCollapsed ? "0.2rem auto" : "";
+    });
+
+    if (title) {
+      title.style.display = isCollapsed ? "none" : "inline-block";
+    }
+  }
+
+  if (sidebar && toggleBtn) {
+    toggleBtn.addEventListener("click", function () {
+      // sidebar.classList.toggle('collapsed');
+      updateToggleUI();
+      toggleCollapsed(sidebar);
+    });
+  }
+
+  if (toolsToggle && toolsMenu) {
+    toolsToggle.addEventListener("click", function (e) {
+      e.preventDefault();
+      const isOpen = toolsMenu.classList.contains("open");
+      toolsMenu.classList.toggle("open", !isOpen);
+      toolsMenu.style.display = isOpen ? "none" : "block";
+    });
+  }
+
+  updateToggleUI();
+
+});
+
+let selectedLang = localStorage.getItem("selectedLang");
+
 if (!selectedLang) {
   selectedLang = "ar";
   localStorage.setItem("selectedLang", selectedLang);
 }
 
-// Set the button text based on the selected language
 let langToggleBtn = document.getElementById("langToggle");
 if (selectedLang == "ar") {
   langToggleBtn.innerHTML = `
@@ -64,7 +121,6 @@ if (selectedLang == "ar") {
   `;
 }
 
-// Add a click event listener to the button
 langToggleBtn.addEventListener("click", toggleLanguage);
 
 if (!selectedLang) {
@@ -76,30 +132,28 @@ if (!selectedLang) {
   window.history.replaceState({}, document.title, url.toString());
 }
 
-/////////////////////////////////////////////////////
-
 $(document).ready(function () {
-  const updatesButton = document.getElementById("updates-svg");
+  // const updatesButton = document.getElementById("updates-svg");
 
-  // دالة لإضافة حركة الوميض
-  function blinkButton() {
-    updatesButton.classList.add("blink");
+  // // دالة لإضافة حركة الوميض
+  // function blinkButton() {
+  //   updatesButton.classList.add("blink");
 
-    // إزالة الحركة بعد فترة قصيرة
-    setTimeout(() => {
-      updatesButton.classList.remove("blink");
-    }, 2000); // مدة الوميض
-  }
+  //   // إزالة الحركة بعد فترة قصيرة
+  //   setTimeout(() => {
+  //     updatesButton.classList.remove("blink");
+  //   }, 2000); // مدة الوميض
+  // }
 
-  // تنفيذ حركة الوميض لأول مرة عند تحميل الصفحة
-  window.onload = function () {
-    blinkButton();
+  // // تنفيذ حركة الوميض لأول مرة عند تحميل الصفحة
+  // window.onload = function () {
+  //   blinkButton();
 
-    // تكرار الحركة كل 10 ثواني
-    setInterval(blinkButton, 6000); // 10000 مللي ثانية = 10 ثواني
-  };
+  //   // تكرار الحركة كل 10 ثواني
+  //   setInterval(blinkButton, 6000); // 10000 مللي ثانية = 10 ثواني
+  // };
 
-  var table = $(".table").DataTable({
+  var table = $(".table:not(#clientsTable)").DataTable({
     scrollX: true,
     order: [[0, "desc"]],
     "data-ordering": true,
@@ -137,11 +191,13 @@ document.querySelectorAll('input[type="date"]').forEach(function (input) {
   input.value = localDate;
 });
 
-
 document.querySelectorAll('input[type="datetime-local"]').forEach(function (input) {
   const now = new Date();
   const offset = now.getTimezoneOffset();
   now.setMinutes(now.getMinutes() - offset);
+  if (input.id === "last_activity_date") {
+    return; // تخطي هذا الحقل
+  }
 
   if (input.id === "start_date") {
     // ضبط الوقت ليكون 12:00 AM
@@ -158,33 +214,20 @@ document.querySelectorAll('input[type="datetime-local"]').forEach(function (inpu
   }
 });
 
-
-///////////////////////////////////
-// ul-li-items highlights
-// الحصول على الـ URL الحالي
 const _url = window.location.href;
-// إنشاء كائن URL لتحليل الـ URL
 const urlObject = new URL(_url);
-// تقسيم مسار الـ URL للحصول على الأجزاء المختلفة
 const pathSegments = urlObject.pathname.split("/");
-// الحصول على اسم الصفحة بدون الامتداد
 const pageName = pathSegments[pathSegments.length - 1].split(".")[0] + "-li";
 const staticPageName = pathSegments[pathSegments.length - 1].split(".")[0];
-// عرض اسم الصفحة في وحدة التحكم
-// console.log(pageName);
-// console.log(staticPageName);
-// تحديد العنصر بناءً على معرف الصفحة وإضافة تأثير الظل
 const pageElement = document.getElementById(pageName);
 if (pageElement) {
-  pageElement.style.boxShadow =
-    "0 4px 8px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.3)";
+  pageElement.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.3)";
   pageElement.style.fontWeight = "bold";
 } else {
   console.warn(`No element found with id: ${pageName}`);
 }
 
 // ------------الحصول على رصيد البنك-----------
-
 $(document).ready(function () {
   $.ajax({
     url: "./api/get_bank_balance.php",
@@ -197,27 +240,9 @@ $(document).ready(function () {
       $("#facilities_amount").val(data.facilities_amount);
       let aa = data.account_amount < 0 ? "text-danger" : "";
       let fa = data.facilities_amount < 0 ? "text-danger" : "";
-      $(".account_amount").append(
-        "<span class='" +
-          aa +
-          "'>" +
-          translate("main", lang) +
-          ": " +
-          data.account_amount +
-          "</span>"
-      );
-      $(".account_amount").append(
-        "<span class='" +
-          fa +
-          "'> | " +
-          translate("facilities", lang) +
-          ": " +
-          data.facilities_amount +
-          "</span>"
-      );
-      $(".account_amount").append(
-        ' <svg xmlns="http://www.w3.org/2000/svg" fill="#00c800" width="20px" height="20px" viewBox="0 0 16 16"><path d="M12.32 8a3 3 0 0 0-2-.7H5.63A1.59 1.59 0 0 1 4 5.69a2 2 0 0 1 0-.25 1.59 1.59 0 0 1 1.63-1.33h4.62a1.59 1.59 0 0 1 1.57 1.33h1.5a3.08 3.08 0 0 0-3.07-2.83H8.67V.31H7.42v2.3H5.63a3.08 3.08 0 0 0-3.07 2.83 2.09 2.09 0 0 0 0 .25 3.07 3.07 0 0 0 3.07 3.07h4.74A1.59 1.59 0 0 1 12 10.35a1.86 1.86 0 0 1 0 .34 1.59 1.59 0 0 1-1.55 1.24h-4.7a1.59 1.59 0 0 1-1.55-1.24H2.69a3.08 3.08 0 0 0 3.06 2.73h1.67v2.27h1.25v-2.27h1.7a3.08 3.08 0 0 0 3.06-2.73v-.34A3.06 3.06 0 0 0 12.32 8z"/></svg>'
-      );
+      $(".account_amount").append("<span class='" + aa + "'>" + translate("main", lang) + ": " + data.account_amount + "</span>");
+      $(".account_amount").append("<span class='" + fa + "'> | " + translate("facilities", lang) + ": " + data.facilities_amount + "</span>");
+      $(".account_amount").append(' <svg xmlns="http://www.w3.org/2000/svg" fill="#00c800" width="20px" height="20px" viewBox="0 0 16 16"><path d="M12.32 8a3 3 0 0 0-2-.7H5.63A1.59 1.59 0 0 1 4 5.69a2 2 0 0 1 0-.25 1.59 1.59 0 0 1 1.63-1.33h4.62a1.59 1.59 0 0 1 1.57 1.33h1.5a3.08 3.08 0 0 0-3.07-2.83H8.67V.31H7.42v2.3H5.63a3.08 3.08 0 0 0-3.07 2.83 2.09 2.09 0 0 0 0 .25 3.07 3.07 0 0 0 3.07 3.07h4.74A1.59 1.59 0 0 1 12 10.35a1.86 1.86 0 0 1 0 .34 1.59 1.59 0 0 1-1.55 1.24h-4.7a1.59 1.59 0 0 1-1.55-1.24H2.69a3.08 3.08 0 0 0 3.06 2.73h1.67v2.27h1.25v-2.27h1.7a3.08 3.08 0 0 0 3.06-2.73v-.34A3.06 3.06 0 0 0 12.32 8z"/></svg>');
     },
     error: function (xhr, status, error) {
       console.error("Error: " + error);
@@ -226,7 +251,6 @@ $(document).ready(function () {
 });
 
 //---------------- التأكيد على حذف مستخدم-------------------
-
 $("#users_table").on("click", ".delete-button", function () {
   var id = $(this).data("id");
   Swal.fire({
@@ -253,7 +277,6 @@ $("#users_table").on("click", ".delete-button", function () {
 });
 
 // ---------------تجهيز مستخدم للتعديل------------
-
 $(document).ready(function () {
   $("#users_table").on("click", ".edit-button", function () {
     var id = $(this).data("id");
@@ -290,10 +313,7 @@ $(document).ready(function () {
         Swal.fire({
           icon: "error",
           title: translate("error", lang),
-          text: translate(
-            "an_error_occurred_while_fetching_the_data_please_try_again_later",
-            lang
-          ),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
         });
       },
     });
@@ -301,7 +321,6 @@ $(document).ready(function () {
 });
 
 //---------------- التأكيد على حذف سائق-------------------
-
 $("#drivers_table").on("click", ".delete-button", function () {
   var id = $(this).data("id");
   Swal.fire({
@@ -328,7 +347,6 @@ $("#drivers_table").on("click", ".delete-button", function () {
 });
 
 // ---------------تجهيز سائق للتعديل------------
-
 $(document).ready(function () {
   $("#drivers_table").on("click", ".edit-button", function () {
     var id = $(this).data("id");
@@ -363,10 +381,7 @@ $(document).ready(function () {
         Swal.fire({
           icon: "error",
           title: translate("error", lang),
-          text: translate(
-            "an_error_occurred_while_fetching_the_data_please_try_again_later",
-            lang
-          ),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
         });
       },
     });
@@ -415,6 +430,12 @@ $(document).ready(function () {
         select: function (event, ui) {
           if (ui.item.valid) {
             $("#driver_id").val(ui.item.label);
+            if($("#driver_uae_id")){
+              $("#driver_uae_id").val(ui.item.hidden_values.uae_id);
+            }
+            if($("#driver_passport_number")){
+              $("#driver_passport_number").val(ui.item.hidden_values.passport_number);
+            }
             // addSelectedItem(ui.item.label);
           } else {
             $("#driver_id").val("");
@@ -445,7 +466,152 @@ $(document).ready(function () {
   });
 });
 
+// ------- البحث عن موظف / مستخدم------------
+$(document).ready(function () {
+  var validUserIds = {};
+  var oldValue;
+
+  $("#user_id").on("focus", function () {
+    oldValue = $(this).val();
+    $(this)
+      .autocomplete({
+        source: function (request, response) {
+          $.ajax({
+            url: "./api/search_for_user.php",
+            type: "GET",
+            dataType: "json",
+            data: {
+              term: request.term,
+            },
+            success: function (data) {
+              if (data.length === 0) {
+                response([
+                  {
+                    label: translate("no_results", lang),
+                    value: "",
+                    valid: false,
+                  },
+                ]);
+              } else {
+                data = data.map(function (item) {
+                  item.valid = true;
+                  validUserIds[item.label] = item.value;
+                  return item;
+                });
+                response(data);
+              }
+            },
+          });
+        },
+        minLength: 1,
+        delay: 500,
+        select: function (event, ui) {
+          if (ui.item.valid) {
+            $("#user_id").val(ui.item.label);
+            // addSelectedItem(ui.item.label);
+          } else {
+            $("#user_id").val("");
+          }
+          return false;
+        },
+      })
+      .autocomplete("instance")._renderItem = function (ul, item) {
+      return $("<li>")
+        .append("<div>" + item.label + "</div>")
+        .appendTo(ul);
+    };
+  });
+
+  $("#user_id").on("blur", function () {
+    var newValue = $(this).val();
+    if (!validUserIds.hasOwnProperty(newValue)) {
+      $(this).val(oldValue);
+    }
+  });
+
+  // التحقق عند إرسال النموذج
+  $("form").on("submit", function () {
+    var value = $("#user_id").val();
+    if (!validUserIds.hasOwnProperty(value)) {
+      $("#user_id").val("");
+    }
+  });
+});
+
+// ------- البحث عن شاحن------------
+$(document).ready(function () {
+  var validShipperIds = {};
+  var oldValue;
+
+  $("#shipper_id").on("focus", function () {
+    oldValue = $(this).val();
+    $(this)
+      .autocomplete({
+        source: function (request, response) {
+          $.ajax({
+            url: "./api/search_for_shipper.php",
+            type: "GET",
+            dataType: "json",
+            data: {
+              term: request.term,
+            },
+            success: function (data) {
+              if (data.length === 0) {
+                response([
+                  {
+                    label: translate("no_results", lang),
+                    value: "",
+                    valid: false,
+                  },
+                ]);
+              } else {
+                data = data.map(function (item) {
+                  item.valid = true;
+                  validShipperIds[item.label] = item.value;
+                  return item;
+                });
+                response(data);
+              }
+            },
+          });
+        },
+        minLength: 1,
+        delay: 500,
+        select: function (event, ui) {
+          if (ui.item.valid) {
+            $("#shipper_id").val(ui.item.label);
+            // addSelectedItem(ui.item.label);
+          } else {
+            $("#shipper_id").val("");
+          }
+          return false;
+        },
+      })
+      .autocomplete("instance")._renderItem = function (ul, item) {
+      return $("<li>")
+        .append("<div>" + item.label + "</div>")
+        .appendTo(ul);
+    };
+  });
+
+  $("#shipper_id").on("blur", function () {
+    var newValue = $(this).val();
+    if (!validShipperIds.hasOwnProperty(newValue)) {
+      $(this).val(oldValue);
+    }
+  });
+
+  // التحقق عند إرسال النموذج
+  $("form").on("submit", function () {
+    var value = $("#shipper_id").val();
+    if (!validShipperIds.hasOwnProperty(value)) {
+      $("#shipper_id").val("");
+    }
+  });
+});
+
 // ------- البحث عن نوع مصاريف الرحلة------------
+if (staticPageName == "trips") {
 $(document).ready(function () {
   var validFeeTypes = {};
 
@@ -456,8 +622,7 @@ $(document).ready(function () {
     const feeAmountField = formGroup.find('input[name="fee_amount[]"]');
     const feeAmount = feeAmountField.data("price");
 
-    const newAmount =
-      (parseFloat(quantity) || 0) * (parseFloat(feeAmount) || 0);
+    const newAmount = (parseFloat(quantity) || 0) * (parseFloat(feeAmount) || 0);
     feeAmountField.val(newAmount.toFixed(2));
 
     // تحديث المجموع بعد تعديل السعر
@@ -485,23 +650,13 @@ $(document).ready(function () {
     const extra_income = parseFloat($("#extra_income").val()) || 0;
 
     // حساب قيمة المتبقي وتحديث الحقل
-    const remaining = (trip_rent - total - driver_fee + extra_income).toFixed(
-      2
-    );
+    const remaining = (trip_rent - total - driver_fee + extra_income).toFixed(2);
     $("#remaining").val(remaining);
   }
 
   // استدعاء updateTotal عند حدوث تغييرات في الحقول ذات الصلة
-  $(document).on(
-    "input",
-    'input[name="quantity[]"], input[name="fee_amount[]"]',
-    updateTotal
-  );
-  $(document).on(
-    "change",
-    "#trip_rent, #driver_fee, #extra_income",
-    updateTotal
-  );
+  $(document).on("input", 'input[name="quantity[]"], input[name="fee_amount[]"]', updateTotal);
+  $(document).on("change", "#trip_rent, #driver_fee, #extra_income", updateTotal);
 
   // عند تغيير قيمة حقل الكمية
   $(document).on("input", 'input[name="quantity[]"]', function () {
@@ -593,45 +748,33 @@ $(document).ready(function () {
   // حساب المجموع الأولي عند تحميل الصفحة
   updateTotal();
 });
-
+}
 // ---------- اضافة وازالة حقول مصاريف الرحلة-----------
-
 $(document).ready(function () {
   $("#addFee").click(function () {
     $("#feesContainer").append(`
           <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;">
             <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap; width: 35%">
-                <label for="fee_type" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                  "type",
-                  lang
-                )}</label>
-                <input type="text" class="form-control trip_fee_type_id" name="fee_type[]" required placeholder="${translate(
-                  "type_to_search",
-                  lang
-                )}...">
+                <label for="fee_type" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("type", lang)}</label>
+                <input type="text" class="form-control trip_fee_type_id" name="fee_type[]" required placeholder="${translate("type_to_search", lang)}...">
                   <input type="hidden" class="form-control" name="bank_deduction[]" required>
             </div> 
-            ${staticPageName != "invoices" ? `   
+            ${
+              staticPageName != "invoices"
+                ? `   
             <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
-                <label for="quantity" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                  "quantity",
-                  lang
-                )}</label>
+                <label for="quantity" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("quantity", lang)}</label>
                 <input type="number" min="1" value="1" class="form-control" name="quantity[]" required>
             </div>
-            ` : ``}
+            `
+                : ``
+            }
             <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
-                <label for="fee_amount" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                  "price",
-                  lang
-                )}</label>
+                <label for="fee_amount" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("price", lang)}</label>
                 <input type="number" min="0" step="0.01" class="form-control" name="fee_amount[]" required>
             </div>
             <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
-                <label for="description" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                  "additional_description",
-                  lang
-                )} ${translate("optional", lang)}</label>
+                <label for="description" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("additional_description", lang)} ${translate("optional", lang)}</label>
                 <input type="text" class="form-control" name="description[]">
             </div>
             <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
@@ -640,11 +783,7 @@ $(document).ready(function () {
             </div>
         </div>
       `);
-    $("#feesContainer")
-      .children()
-      .last()
-      .find('input[name="fee_type[]"]')
-      .focus();
+    $("#feesContainer").children().last().find('input[name="fee_type[]"]').focus();
   });
   $(document).on("click", ".btn-remove-fee", function () {
     $(this).closest(".form-group").remove();
@@ -652,7 +791,6 @@ $(document).ready(function () {
 });
 
 //---------------- التأكيد على حذف نوع مصاريف رحلة-------------------
-
 $("#expenses_types_table").on("click", ".delete-button", function () {
   var id = $(this).data("id");
   Swal.fire({
@@ -679,7 +817,6 @@ $("#expenses_types_table").on("click", ".delete-button", function () {
 });
 
 // ---------------تجهيز نوع مصروف رحلة للتعديل------------
-
 $(document).ready(function () {
   $("#expenses_types_table").on("click", ".edit-button", function () {
     var id = $(this).data("id");
@@ -713,10 +850,7 @@ $(document).ready(function () {
         Swal.fire({
           icon: "error",
           title: translate("error", lang),
-          text: translate(
-            "an_error_occurred_while_fetching_the_data_please_try_again_later",
-            lang
-          ),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
         });
       },
     });
@@ -724,7 +858,6 @@ $(document).ready(function () {
 });
 
 //---------------- التأكيد على حذف رحلة-------------------
-
 $("#trips_table").on("click", ".delete-button", function () {
   var id = $(this).data("id");
   Swal.fire({
@@ -752,7 +885,7 @@ $("#trips_table").on("click", ".delete-button", function () {
 
 // // ---------------تجهيز رحلة للتعديل------------
 // // ---------- حلقة لجلب مصاريف الرحلة وانشاء الحقول من اجل التعديل مع id كل مصروف -----------
-
+if (staticPageName == "trips") {
 $(document).ready(function () {
   var validFeeTypes = {};
 
@@ -763,8 +896,7 @@ $(document).ready(function () {
     const feeAmountField = formGroup.find('input[name="fee_amount[]"]');
     const feeAmount = feeAmountField.data("price");
 
-    const newAmount =
-      (parseFloat(quantity) || 0) * (parseFloat(feeAmount) || 0);
+    const newAmount = (parseFloat(quantity) || 0) * (parseFloat(feeAmount) || 0);
     feeAmountField.val(newAmount.toFixed(2));
 
     // تحديث المجموع بعد تعديل السعر
@@ -792,9 +924,7 @@ $(document).ready(function () {
     const extra_income = parseFloat($("#extra_income").val()) || 0;
 
     // حساب قيمة المتبقي وتحديث الحقل
-    const remaining = (trip_rent - total - driver_fee + extra_income).toFixed(
-      2
-    );
+    const remaining = (trip_rent - total - driver_fee + extra_income).toFixed(2);
     $("#remaining").val(remaining);
   }
 
@@ -898,12 +1028,7 @@ $(document).ready(function () {
       dataType: "json",
       success: function (data) {
         // تعبئة الحقول بالبيانات المسترجعة
-        var driverFormat =
-          data.driver_id +
-          "- " +
-          data.driver_name +
-          " | " +
-          data.vehicle_number;
+        var driverFormat = data.driver_id + "- " + data.driver_name + " | " + data.vehicle_number;
         $("#driver_id").val(driverFormat);
         $("#hidden_driver_id").val(data.driver_id);
 
@@ -934,8 +1059,7 @@ $(document).ready(function () {
 
             // إنشاء الحقول بناءً على البيانات المستلمة
             fees.forEach((fee) => {
-              var fee_type_data =
-                fee.trip_fee_type_id + "- " + fee.fee_type_name;
+              var fee_type_data = fee.trip_fee_type_id + "- " + fee.fee_type_name;
               if (fee.fee_type_amount != 0.0) {
                 fee_type_data += " | " + fee.fee_type_amount;
               }
@@ -943,44 +1067,21 @@ $(document).ready(function () {
               $("#feesContainer").append(`
                                   <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;">
                                     <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap; width: 35%">
-                                      <label for="fee_type" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                                        "type",
-                                        lang
-                                      )}</label>
-                                      <input type="text" class="form-control trip_fee_type_id" name="fee_type[]" value="${fee_type_data}" required placeholder="${translate(
-                "type_to_search",
-                lang
-              )}...">
-                                      <input type="hidden" class="form-control" name="fee_ids[]" value="${
-                                        fee.id
-                                      }">
+                                      <label for="fee_type" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("type", lang)}</label>
+                                      <input type="text" class="form-control trip_fee_type_id" name="fee_type[]" value="${fee_type_data}" required placeholder="${translate("type_to_search", lang)}...">
+                                      <input type="hidden" class="form-control" name="fee_ids[]" value="${fee.id}">
                                   </div>    
                                   <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
-                                      <label for="quantity" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                                        "quantity",
-                                        lang
-                                      )}</label>
-                                      <input type="number" min="1" class="form-control" name="quantity[]" value="${
-                                        fee.quantity
-                                      }" required>
+                                      <label for="quantity" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("quantity", lang)}</label>
+                                      <input type="number" min="1" class="form-control" name="quantity[]" value="${fee.quantity}" required>
                                   </div>
                                   <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
-                                      <label for="fee_amount" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                                        "price",
-                                        lang
-                                      )}</label>
-                                      <input type="number" min="0" step="0.01" class="form-control" name="fee_amount[]" value="${
-                                        fee.amount
-                                      }" required>
+                                      <label for="fee_amount" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("price", lang)}</label>
+                                      <input type="number" min="0" step="0.01" class="form-control" name="fee_amount[]" value="${fee.amount}" required>
                                   </div>
                                   <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
-                                      <label for="description" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                                        "additional_description",
-                                        lang
-                                      )} ${translate("optional", lang)}</label>
-                                      <input type="text" class="form-control" name="description[]" value="${
-                                        fee.description
-                                      }">
+                                      <label for="description" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("additional_description", lang)} ${translate("optional", lang)}</label>
+                                      <input type="text" class="form-control" name="description[]" value="${fee.description}">
                                   </div>
                                     <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
                                         <label for="" style="margin-right: 0.5rem; margin-left: 0.5rem;"><br></label>
@@ -991,9 +1092,7 @@ $(document).ready(function () {
 
               // تحديث قيمة المبلغ بناءً على الكمية والسعر لكل حقل
               const formGroup = $("#feesContainer").find(".form-group").last(); // الحصول على آخر حقل مضاف
-              const feeAmountField = formGroup.find(
-                'input[name="fee_amount[]"]'
-              );
+              const feeAmountField = formGroup.find('input[name="fee_amount[]"]');
               feeAmountField.data("price", fee.fee_type_amount);
             });
             // ديث المجموع بعد إضافة الحقول الجديدة
@@ -1005,10 +1104,7 @@ $(document).ready(function () {
             Swal.fire({
               icon: "error",
               title: translate("error", lang),
-              text: translate(
-                "an_error_occurred_while_fetching_the_data_please_try_again_later",
-                lang
-              ),
+              text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
             });
           },
         });
@@ -1017,10 +1113,7 @@ $(document).ready(function () {
         Swal.fire({
           icon: "error",
           title: translate("error", lang),
-          text: translate(
-            "an_error_occurred_while_fetching_the_data_please_try_again_later",
-            lang
-          ),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
         });
       },
     });
@@ -1046,23 +1139,13 @@ $(document).ready(function () {
     const driver_fee = parseFloat($("#driver_fee").val()) || 0;
     const extra_income = parseFloat($("#extra_income").val()) || 0;
     // حساب قيمة المتبقي وتحديث الحقل
-    const remaining = (trip_rent - total - driver_fee + extra_income).toFixed(
-      2
-    );
+    const remaining = (trip_rent - total - driver_fee + extra_income).toFixed(2);
     $("#remaining").val(remaining);
   }
 
   // استدعاء updateTotal عند حدوث تغييرات في الحقول ذات الصلة
-  $(document).on(
-    "input",
-    'input[name="quantity[]"], input[name="fee_amount[]"]',
-    updateTotal
-  );
-  $(document).on(
-    "change",
-    "#trip_rent, #driver_fee, #extra_income",
-    updateTotal
-  );
+  $(document).on("input", 'input[name="quantity[]"], input[name="fee_amount[]"]', updateTotal);
+  $(document).on("change", "#trip_rent, #driver_fee, #extra_income", updateTotal);
 
   // عند تغيير قيمة حقل الكمية
   $(document).on("input", 'input[name="quantity[]"]', function () {
@@ -1074,9 +1157,8 @@ $(document).ready(function () {
     updateTotal();
   });
 });
-
+}
 //---------------- التأكيد على حذف مكتب سعودي-------------------
-
 $("#sau_offices_table").on("click", ".delete-button", function () {
   var id = $(this).data("id");
   Swal.fire({
@@ -1103,7 +1185,6 @@ $("#sau_offices_table").on("click", ".delete-button", function () {
 });
 
 // ---------------تجهيز مكتب سعودي للتعديل------------
-
 $(document).ready(function () {
   $("#sau_offices_table").on("click", ".edit-button", function () {
     var id = $(this).data("id");
@@ -1139,10 +1220,7 @@ $(document).ready(function () {
         Swal.fire({
           icon: "error",
           title: translate("error", lang),
-          text: translate(
-            "an_error_occurred_while_fetching_the_data_please_try_again_later",
-            lang
-          ),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
         });
       },
     });
@@ -1165,7 +1243,7 @@ $(document).ready(function () {
             dataType: "json",
             data: {
               term: request.term,
-              lang: lang
+              lang: lang,
             },
             success: function (data) {
               if (data.length === 0) {
@@ -1223,7 +1301,6 @@ $(document).ready(function () {
 });
 
 // ---------------تجهيز بيان سعودي للتعديل------------
-
 $(document).ready(function () {
   $("#sau_bills_table").on("click", ".edit-button", function () {
     var id = $(this).data("id");
@@ -1245,14 +1322,7 @@ $(document).ready(function () {
       dataType: "json",
       success: function (data) {
         // تعبئة الحقول بالبيانات المسترجعة
-        var sauOfficeFormat =
-          data.sau_office_id +
-          "- " +
-          data.office_name +
-          " | " +
-          translate(data.entity_type, lang) +
-          " | " +
-          data.license_number;
+        var sauOfficeFormat = data.sau_office_id + "- " + data.office_name + " | " + translate(data.entity_type, lang) + " | " + data.license_number;
         $("#sau_office_id").val(sauOfficeFormat);
         $("#hidden_sau_office_id").val(data.sau_office_id);
 
@@ -1276,10 +1346,7 @@ $(document).ready(function () {
         Swal.fire({
           icon: "error",
           title: translate("error", lang),
-          text: translate(
-            "an_error_occurred_while_fetching_the_data_please_try_again_later",
-            lang
-          ),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
         });
       },
     });
@@ -1287,7 +1354,6 @@ $(document).ready(function () {
 });
 
 //---------------- التأكيد على حذف بيان سعودي-------------------
-
 $("#sau_bills_table").on("click", ".delete-button", function () {
   var id = $(this).data("id");
 
@@ -1314,8 +1380,7 @@ $("#sau_bills_table").on("click", ".delete-button", function () {
   });
 });
 
-//---------------- التأكيد على حذف -------------------
-
+//---------------- التأكيد على حذف نوع رسوم خدمة-------------------
 $("#service_fees_types_table").on("click", ".delete-button", function () {
   var id = $(this).data("id");
   Swal.fire({
@@ -1342,7 +1407,6 @@ $("#service_fees_types_table").on("click", ".delete-button", function () {
 });
 
 // ---------------تجهيز نوع رسوم خدمة للتعديل------------
-
 $(document).ready(function () {
   $("#service_fees_types_table").on("click", ".edit-button", function () {
     var id = $(this).data("id");
@@ -1377,38 +1441,232 @@ $(document).ready(function () {
         Swal.fire({
           icon: "error",
           title: translate("error", lang),
-          text: translate(
-            "an_error_occurred_while_fetching_the_data_please_try_again_later",
-            lang
-          ),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
         });
       },
     });
   });
 });
 
-// // ---------------تجهيز خدمة للتعديل------------
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // ---------------تجهيز طلب خدمة ------------
+if (staticPageName == "service-request") {
+$(document).ready(function () {
+
+  $("#service-request-form").on("submit", function(event){
+      event.preventDefault(); // منع الإرسال الافتراضي
+
+      const form = this; // حفظ المرجع للفورم الأصلي
+
+    // جلب القيم من الحقول
+    const serviceType = $(form).find('select[name="service_type"] option:selected').text();
+    const driver = $(form).find('input[name="driver_id"]').val();
+    const parts = driver.split('|');
+    const driverName = parts[0] ? parts[0].trim() : '';
+    const vehicleNumber = parts[1] ? parts[1].trim() : '';
+    const userName = $(form).find('input[name="user_id"]').val();
+    const shipperName = $(form).find('input[name="shipper_id"]').val();
+    const driverUaeId = $(form).find('input[name="driver_uae_id"]').val();
+    const driverPassportNumber = $(form).find('input[name="driver_passport_number"]').val();
+    const textAlignStyle = lang == "ar" ? "text-align: right;" : "text-align: left;";
+    let htmlContent = `
+          <div style="${textAlignStyle}">
+            <p><strong>${translate("service_type", lang)}:</strong> ${serviceType}</p>
+            <p><strong>${translate("driver_name", lang)}:</strong> ${driverName}</p>
+            <p><strong>${translate("vehicle_number", lang)}:</strong> ${vehicleNumber}</p>
+            <p><strong>${translate("uae_id", lang)}:</strong> ${driverUaeId}</p>
+            <p><strong>${translate("passport_number", lang)}:</strong> ${driverPassportNumber}</p>
+            <p><strong>${translate("shipper_name", lang)}:</strong> ${shipperName}</p>
+            <p><strong>${translate("applicant", lang)}:</strong> ${userName}</p>
+          </div>
+        `;
+      Swal.fire({
+          icon: "question",
+          title: translate("are_you_sure", lang),
+           html: htmlContent,
+          // text: translate("check_the_data_before_submit", lang),
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: translate("send_request", lang),
+          cancelButtonText: translate("cancel", lang),
+      }).then((result) => {
+          if (result.isConfirmed) {
+          $('<input>')
+            .attr({
+              type: 'hidden',
+              name: 'insert-service-request',
+              value: '1'
+            })
+            .appendTo(form);
+          form.submit(); // استخدم HTMLFormElement.submit() لتجنب إعادة استدعاء الـ handler
+          } else if (result.isDismissed) {
+              Swal.fire({
+                  icon: "info",
+                  title: translate("canceled", lang),
+                  text: translate("request_has_been_canceled", lang),
+                  showConfirmButton: false,
+                  timer: 1000,
+              });
+          }
+      });
+  });
+
+  // معالجة زر التعديل
+  $("#service_requests_table").on("click", ".edit-button", function () {
+    var id = $(this).data("id");
+    var url = new URL(window.location.href);
+    url.searchParams.set("service-request-uid", id);
+    window.history.replaceState({}, document.title, url.toString());
+    Swal.fire({
+      title: translate("loading", lang),
+      text: translate("please_wait_while_we_fetch_the_data", lang),
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+    $.ajax({
+      url: "./api/get_service_request.php",
+      type: "GET",
+      data: { id: id },
+      dataType: "json",
+      success: function (data) {
+        $("#service_type").val(data.service_type_id);
+        $("#driver_id").val(`${data.driver_id}- ${data.driver_name} | ${data.driver_vehicle_number}`);
+        $("#user_id").val(`${data.user_id}- ${data.user_name}`);
+        $("#shipper_id").val(`${data.shipper_id}- ${data.shipper_name} | ${data.shipper_office_name}`);
+        $("#notes").val(data.notes);
+
+        $("#insert-service-request-btn").hide();
+        $("#update-service-request-btn").attr("data-id", id).show();
+        $("#cancel-service-request-btn").show();
+        
+        Swal.close();
+      },
+      error: function (xhr, status, error) {
+        Swal.fire({
+          icon: "error",
+          title: translate("error", lang),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
+        });
+      },
+    });
+  });
+
+
+
+
+
+//---------------- التأكيد على حذف خدمة-------------------
+$("#service_requests_table").on("click", ".delete-button", function () {
+  var id = $(this).data("id");
+  Swal.fire({
+    icon: "question",
+    title: translate("are_you_sure", lang),
+    text: translate("do_you_want_to_delete_this_item", lang),
+    showConfirmButton: true,
+    showCancelButton: true,
+    confirmButtonText: translate("yes_delete_it", lang),
+    cancelButtonText: translate("no_cancel", lang),
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = `./service-request.php?service-request-did=${id}`;
+    } else if (result.isDismissed) {
+      Swal.fire({
+        icon: "info",
+        title: translate("canceled", lang),
+        text: translate("the_item_is_safe", lang),
+        showConfirmButton: false,
+        timer: 1000,
+      });
+    }
+  });
+});
+
+
+
+
+
+
+});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // ---------------تجهيز خدمة ------------
+if (staticPageName == "services" || staticPageName == "reports") {
 $(document).ready(function () {
   var validFeeTypes = {};
 
   // وظيفة لحساب وتحديث قيمة السعر بناءً على الكمية والسعر
-  function updateFeeAmount(input) {
+  function updateFeeAmount(input) {     
     const formGroup = $(input).closest(".form-group");
     const quantity = formGroup.find('input[name="quantity[]"]').val();
     const feeAmountField = formGroup.find('input[name="fee_amount[]"]');
-    const feeAmount = feeAmountField.data("price");
-    const feeBankAmountField = formGroup.find('input[name="bank_deduction[]"]');
-    const feeBankAmount = feeBankAmountField.data("bank");
+    const unitPrice = parseFloat(feeAmountField.data("price")) || 0;
 
-    const newAmount =
-      (parseFloat(quantity) || 0) * (parseFloat(feeAmount) || 0);
-    const newBankAmount =
-      (parseFloat(quantity) || 0) * (parseFloat(feeBankAmount) || 0);
+    const feeBankAmountField = formGroup.find('input[name="bank_deduction[]"]');
+    const baseBank = parseFloat(feeBankAmountField.data("bank")) || 0;
+    
+
+    const newAmount = quantity * unitPrice;
+    const newBankAmount = quantity * baseBank;
+
     feeAmountField.val(newAmount.toFixed(2));
+    feeBankAmountField.data("bank_final", newBankAmount.toFixed(2));
     feeBankAmountField.val(newBankAmount.toFixed(2));
-    // console.log(newAmount);
-    // console.log(newBankAmount);
 
     // تحديث المجموع بعد تعديل السعر
     updateTotal();
@@ -1424,14 +1682,10 @@ $(document).ready(function () {
       .find(".form-group")
       .each(function () {
         const feeAmount = $(this).find('input[name="fee_amount[]"]').val();
-        const feeBankAmount = $(this)
-          .find('input[name="bank_deduction[]"]')
-          .data("bank");
-        const quantity = $(this).find('input[name="quantity[]"]').val();
-        const newBankAmount =
-          (parseFloat(quantity) || 0) * (parseFloat(feeBankAmount) || 0);
         total += parseFloat(feeAmount) || 0;
-        totalBank += parseFloat(newBankAmount) || 0;
+        
+        const bankValue = $(this).find('input[name="bank_deduction[]"]').data("bank_final");
+        totalBank += parseFloat(bankValue) || 0;
       });
 
     // تحديث حقل المجموع
@@ -1439,8 +1693,7 @@ $(document).ready(function () {
     $("#total_bank_sum").val(totalBank.toFixed(2));
   }
 
-  if (staticPageName == "services" || staticPageName == "reports") {
-    // البحث عن نوع رسوم الخدمة
+  // البحث عن نوع رسوم الخدمة
     $(document).on("focus", ".trip_fee_type_id", function () {
       $(this)
         .autocomplete({
@@ -1485,14 +1738,14 @@ $(document).ready(function () {
             if (ui.item.valid) {
               $(this).val(ui.item.label); // تعيين القيمة في الحقل الحالي
               const formGroup = $(this).closest(".form-group");
-              const feeAmountField = formGroup.find(
-                'input[name="fee_amount[]"]'
-              );
-              const feeBankAmountField = formGroup.find(
-                'input[name="bank_deduction[]"]'
-              );
+              const feeAmountField = formGroup.find('input[name="fee_amount[]"]');
+              const feeBankAmountField = formGroup.find('input[name="bank_deduction[]"]');
+                // كنت عند تجربة تعطيل الداتا لتجربة الفاليو بدل منها
               feeAmountField.data("price", ui.item.amount);
-              feeBankAmountField.data("bank", ui.item.bank);
+              feeBankAmountField.data("bank", ui.item.bank); // // تعيين القيمة الابتدائية للخصم البنكي
+              feeBankAmountField.data("bank_final", 0); // تعيين القيمة الابتدائية لاجمالي الخصم البنكي
+              feeBankAmountField.val(0); // تعيين القيمة الابتدائية لاجمالي الخصم البنكي
+              
               updateFeeAmount(this);
             } else {
               $(this).val(""); // إفراغ الحقل إذا لم يكن العنصر صالحًا
@@ -1514,7 +1767,7 @@ $(document).ready(function () {
           .appendTo(ul);
       };
     });
-  }
+  
 
   // عند إزالة حقل
   $(document).on("click", ".btn-remove-fee", function () {
@@ -1572,8 +1825,7 @@ $(document).ready(function () {
 
             // إنشاء الحقول بناءً على البيانات المستلمة
             fees.forEach((fee) => {
-              var fee_type_data =
-                fee.service_fee_type_id + "- " + fee.fee_type_name;
+              var fee_type_data = fee.service_fee_type_id + "- " + fee.fee_type_name;
               if (fee.fee_type_amount != 0.0) {
                 fee_type_data += " | " + fee.fee_type_amount;
               }
@@ -1583,47 +1835,22 @@ $(document).ready(function () {
               $("#feesContainer").append(`
                                 <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;">
                                   <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap; width: 35%">
-                                    <label for="fee_type" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                                      "type",
-                                      lang
-                                    )}</label>
-                                    <input type="text" class="form-control trip_fee_type_id" name="fee_type[]" value="${fee_type_data}" required placeholder="${translate(
-                "type_to_search",
-                lang
-              )}...">
-                                    <input type="hidden" class="form-control" name="fee_ids[]" value="${
-                                      fee.id
-                                    }">
-                                    <input type="hidden" class="form-control" name="bank_deduction[]" value="${
-                                      fee.fee_type_bank_deduction * fee.quantity
-                                    }">
+                                    <label for="fee_type" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("type", lang)}</label>
+                                    <input type="text" class="form-control trip_fee_type_id" name="fee_type[]" value="${fee_type_data}" required placeholder="${translate("type_to_search", lang)}...">
+                                    <input type="hidden" class="form-control" name="fee_ids[]" value="${fee.id}">
+                                    <input type="hidden" class="form-control" name="bank_deduction[]" value="${fee.bank_deduction_amount}" data-bank_final="${fee.bank_deduction_amount}">
                                 </div>    
                                 <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
-                                    <label for="quantity" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                                      "quantity",
-                                      lang
-                                    )}</label>
-                                    <input type="number" min="1" class="form-control" name="quantity[]" value="${
-                                      fee.quantity
-                                    }" required>
+                                    <label for="quantity" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("quantity", lang)}</label>
+                                    <input type="number" min="1" class="form-control" name="quantity[]" value="${fee.quantity}" required>
                                 </div>
                                 <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
-                                    <label for="fee_amount" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                                      "price",
-                                      lang
-                                    )}</label>
-                                    <input type="number" min="0" step="0.01" class="form-control" name="fee_amount[]" value="${
-                                      fee.amount
-                                    }" required>
+                                    <label for="fee_amount" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("price", lang)}</label>
+                                    <input type="number" min="0" step="0.01" class="form-control" name="fee_amount[]" value="${fee.amount}" required>
                                 </div>
                                 <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
-                                    <label for="description" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                                      "additional_description",
-                                      lang
-                                    )} ${translate("optional", lang)}</label>
-                                    <input type="text" class="form-control" name="description[]" value="${
-                                      fee.description
-                                    }">
+                                    <label for="description" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("additional_description", lang)} ${translate("optional", lang)}</label>
+                                    <input type="text" class="form-control" name="description[]" value="${fee.description}">
                                 </div>
                                 <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
                                     <label for="" style="margin-right: 0.5rem; margin-left: 0.5rem;"><br></label>
@@ -1634,14 +1861,13 @@ $(document).ready(function () {
 
               // تحديث قيمة المبلغ بناءً على الكمية والسعر لكل حقل
               const formGroup = $("#feesContainer").find(".form-group").last(); // الحصول على آخر حقل مضاف
-              const feeAmountField = formGroup.find(
-                'input[name="fee_amount[]"]'
-              );
-              const feeBankAmountField = formGroup.find(
-                'input[name="bank_deduction[]"]'
-              );
+              const feeAmountField = formGroup.find('input[name="fee_amount[]"]');
+              const feeBankAmountField = formGroup.find('input[name="bank_deduction[]"]');
               feeAmountField.data("price", fee.fee_type_amount);
               feeBankAmountField.data("bank", fee.fee_type_bank_deduction);
+              feeBankAmountField.data("bank_final", fee.bank_deduction_amount);
+              feeBankAmountField.val(fee.bank_deduction_amount);
+
             });
             // ديث المجموع بعد إضافة الحقول الجديدة
             // updateTotal();
@@ -1652,10 +1878,7 @@ $(document).ready(function () {
             Swal.fire({
               icon: "error",
               title: translate("error", lang),
-              text: translate(
-                "an_error_occurred_while_fetching_the_data_please_try_again_later",
-                lang
-              ),
+              text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
             });
           },
         });
@@ -1664,10 +1887,7 @@ $(document).ready(function () {
         Swal.fire({
           icon: "error",
           title: translate("error", lang),
-          text: translate(
-            "an_error_occurred_while_fetching_the_data_please_try_again_later",
-            lang
-          ),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
         });
       },
     });
@@ -1683,26 +1903,15 @@ $(document).ready(function () {
       .find(".form-group")
       .each(function () {
         const feeAmount = $(this).find('input[name="fee_amount[]"]').val();
-        const feeBankAmount = $(this)
-          .find('input[name="bank_deduction[]"]')
-          .data("bank");
-        const quantity = $(this).find('input[name="quantity[]"]').val();
-        const newBankAmount =
-          (parseFloat(quantity) || 0) * (parseFloat(feeBankAmount) || 0);
         total += parseFloat(feeAmount) || 0;
-        totalBank += parseFloat(newBankAmount) || 0;
+        
+        const bankValue = $(this).find('input[name="bank_deduction[]"]').data("bank_final");
+        totalBank += parseFloat(bankValue) || 0;
       });
 
     $("#total_sum").val(total.toFixed(2));
     $("#total_bank_sum").val(totalBank.toFixed(2));
   }
-
-  // استدعاء updateTotal عند حدوث تغييرات في الحقول ذات الصلة
-  $(document).on(
-    "input",
-    'input[name="quantity[]"], input[name="fee_amount[]"]',
-    updateTotal
-  );
 
   // عند تغيير قيمة حقل الكمية
   $(document).on("input", 'input[name="quantity[]"]', function () {
@@ -1714,9 +1923,9 @@ $(document).ready(function () {
     updateTotal();
   });
 });
+}
 
 //---------------- التأكيد على حذف خدمة-------------------
-
 $("#services_table").on("click", ".delete-button", function () {
   var id = $(this).data("id");
   var oldBankAmount = $(this).data("old_bank_amount");
@@ -1817,7 +2026,6 @@ $(document).ready(function () {
 });
 
 //---------------- التأكيد على حذف نوع مصروف-------------------
-
 $("#expenses_types_table1").on("click", ".delete-button", function () {
   var id = $(this).data("id");
   Swal.fire({
@@ -1844,7 +2052,6 @@ $("#expenses_types_table1").on("click", ".delete-button", function () {
 });
 
 // ---------------تجهيز نوع مصروف للتعديل------------
-
 $(document).ready(function () {
   $("#expenses_types_table1").on("click", ".edit-button", function () {
     var id = $(this).data("id");
@@ -1879,10 +2086,7 @@ $(document).ready(function () {
         Swal.fire({
           icon: "error",
           title: translate("error", lang),
-          text: translate(
-            "an_error_occurred_while_fetching_the_data_please_try_again_later",
-            lang
-          ),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
         });
       },
     });
@@ -1890,7 +2094,6 @@ $(document).ready(function () {
 });
 
 //---------------- التأكيد على حذف مصروف-------------------
-
 $("#expenses_table").on("click", ".delete-button", function () {
   var id = $(this).data("id");
   var old_expense_amount = $(this).data("old_expense_amount");
@@ -1920,7 +2123,6 @@ $("#expenses_table").on("click", ".delete-button", function () {
 });
 
 // ---------------تجهيز مصروف للتعديل------------
-
 $(document).ready(function () {
   $("#expenses_table").on("click", ".edit-button", function () {
     var id = $(this).data("id");
@@ -1957,72 +2159,38 @@ $(document).ready(function () {
         var newE = null;
         if (data.bank_deduction == 1) {
           newE = `
-                        <input type="text" class="form-control" id="bank_deduction" name="bank_deduction" disabled value="${translate(
-                          "none",
-                          lang
-                        )}">
-                        <input type="hidden" id="hidden_bank_deduction" name="hidden_bank_deduction" value="${
-                          data.bank_deduction
-                        }">
+                        <input type="text" class="form-control" id="bank_deduction" name="bank_deduction" disabled value="${translate("none", lang)}">
+                        <input type="hidden" id="hidden_bank_deduction" name="hidden_bank_deduction" value="${data.bank_deduction}">
                     `;
         } else if (data.bank_deduction == 2) {
           newE = `
-                        <input type="text" class="form-control" id="bank_deduction" name="bank_deduction" disabled value="${translate(
-                          "deposit",
-                          lang
-                        )} (+)" style="color: #00c800 !important">
-                        <input type="hidden" id="hidden_bank_deduction" name="hidden_bank_deduction" value="${
-                          data.bank_deduction
-                        }">
+                        <input type="text" class="form-control" id="bank_deduction" name="bank_deduction" disabled value="${translate("deposit", lang)} (+)" style="color: #00c800 !important">
+                        <input type="hidden" id="hidden_bank_deduction" name="hidden_bank_deduction" value="${data.bank_deduction}">
                     `;
         } else if (data.bank_deduction == 3) {
           newE = `
-                        <input type="text" class="form-control" id="bank_deduction" name="bank_deduction" disabled value="${translate(
-                          "debit",
-                          lang
-                        )} (-)" style="color: red !important">
-                        <input type="hidden" id="hidden_bank_deduction" name="hidden_bank_deduction" value="${
-                          data.bank_deduction
-                        }">
+                        <input type="text" class="form-control" id="bank_deduction" name="bank_deduction" disabled value="${translate("debit", lang)} (-)" style="color: red !important">
+                        <input type="hidden" id="hidden_bank_deduction" name="hidden_bank_deduction" value="${data.bank_deduction}">
                   `;
         }
-
-
 
         var newF = null;
         if (data.facilities_account == 1) {
           newF = `
-                        <input type="text" class="form-control" id="facilities_account" name="facilities_account" disabled value="${translate(
-                          "none",
-                          lang
-                        )}">
-                        <input type="hidden" id="hidden_facilities_account" name="hidden_facilities_account" value="${
-                          data.facilities_account
-                        }">
+                        <input type="text" class="form-control" id="facilities_account" name="facilities_account" disabled value="${translate("none", lang)}">
+                        <input type="hidden" id="hidden_facilities_account" name="hidden_facilities_account" value="${data.facilities_account}">
                     `;
         } else if (data.facilities_account == 2) {
           newF = `
-                        <input type="text" class="form-control" id="facilities_account" name="facilities_account" disabled value="${translate(
-                          "deposit",
-                          lang
-                        )} (+)" style="color: #00c800 !important">
-                        <input type="hidden" id="hidden_facilities_account" name="hidden_facilities_account" value="${
-                          data.facilities_account
-                        }">
+                        <input type="text" class="form-control" id="facilities_account" name="facilities_account" disabled value="${translate("deposit", lang)} (+)" style="color: #00c800 !important">
+                        <input type="hidden" id="hidden_facilities_account" name="hidden_facilities_account" value="${data.facilities_account}">
                     `;
         } else if (data.facilities_account == 3) {
           newF = `
-                        <input type="text" class="form-control" id="facilities_account" name="facilities_account" disabled value="${translate(
-                          "debit",
-                          lang
-                        )} (-)" style="color: red !important">
-                        <input type="hidden" id="hidden_facilities_account" name="hidden_facilities_account" value="${
-                          data.facilities_account
-                        }">
+                        <input type="text" class="form-control" id="facilities_account" name="facilities_account" disabled value="${translate("debit", lang)} (-)" style="color: red !important">
+                        <input type="hidden" id="hidden_facilities_account" name="hidden_facilities_account" value="${data.facilities_account}">
                   `;
         }
-
-
 
         $("#bank_deduction").replaceWith(newE);
         $("#facilities_account").replaceWith(newF);
@@ -2036,100 +2204,12 @@ $(document).ready(function () {
         Swal.fire({
           icon: "error",
           title: translate("error", lang),
-          text: translate(
-            "an_error_occurred_while_fetching_the_data_please_try_again_later",
-            lang
-          ),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
         });
       },
     });
   });
 });
-
-// let selectedItems = [];
-// console.log(selectedItems);
-// function addSelectedItem(item) {
-//     if ($.inArray(item, selectedItems) === -1) {
-//         selectedItems.push(item);
-//         $('#selected_items').append(
-//             '<span class="selected-item bg-secondary m-1">' + item + ' <button class="remove-item btn bg-danger">x</button></span> '
-//         );
-//         $('.remove-item').click(function () {
-//             var itemToRemove = $(this).parent().text().replace(' x', '');
-//             removeSelectedItem(itemToRemove);
-//         });
-//     }
-// }
-
-// function removeSelectedItem(item) {
-//     var index = $.inArray(item, selectedItems);
-//     if (index !== -1) {
-//         selectedItems.splice(index, 1);
-//         $('#selected_items')
-//             .find('.selected-item')
-//             .filter(function () {
-//                 return $(this).text().replace(' x', '') === item;
-//             })
-//             .remove();
-//     }
-// }
-// //  OPTION NOT REQUIRED
-// $(document).ready(function() {
-//     let lastUpdate = 0;
-//     const updateInterval = 60000; // تحديث كل دقيقة
-
-//     function updateLastSeen() {
-//         const currentTime = new Date().getTime();
-//         if (currentTime - lastUpdate > updateInterval) {
-//             $.ajax({
-//                 url: './api/update_last_seen.php',
-//                 method: 'GET',
-//                 success: function(response) {
-//                     console.log(response);
-//                     lastUpdate = currentTime;
-//                 },
-//                 error: function(xhr, status, error) {
-//                     console.error(xhr, status, error);
-//                 }
-//             });
-//         }
-//     }
-
-//     let lastUpdateG = 0;
-//     const updateIntervalG = 60000; // تحديث كل دقيقة
-
-//     function getStatus(){
-//         const currentTime = new Date().getTime();
-//         if (currentTime - lastUpdateG > updateIntervalG) {
-//             $.ajax({
-//                 url: './api/get_last_seen.php',
-//                 method: 'GET',
-//                 success: function(response) {
-//                     response.forEach(function(user) {
-//                         $('#lastSeen-' + user.id).text(user.status);
-//                         console.log(user.status);
-//                     });
-//                     console.log(response);
-//                     lastUpdateG = currentTime;
-//                 },
-//                 error: function(xhr, status, error) {
-//                     console.error(xhr, status, error);
-//                 }
-//             });
-//         }
-//     }
-
-//     // تحديث وقت آخر ظهور عند تغيير المحتوى
-//     $(document).change(function() {
-//         updateLastSeen();
-//     });
-//     updateLastSeen();
-//      // تحديث وقت آخر ظهور عند تحريك الماوس
-//      $(document).change(function() {
-//         getStatus();
-//     });
-//     getStatus();
-// });
 
 function updateDates() {
   var paramType = document.getElementById("paramType").value;
@@ -2144,27 +2224,24 @@ function updateDates() {
 }
 
 if (document.getElementById("dashboardForm")) {
-  document
-    .getElementById("dashboardForm")
-    .addEventListener("submit", function (event) {
-      var paramType = document.getElementById("paramType").value;
-      var startDate = document.getElementById("startDate").value;
-      var endDate = document.getElementById("endDate").value;
+  document.getElementById("dashboardForm").addEventListener("submit", function (event) {
+    var paramType = document.getElementById("paramType").value;
+    var startDate = document.getElementById("startDate").value;
+    var endDate = document.getElementById("endDate").value;
 
-      if (paramType === "period" && (!startDate || !endDate)) {
-        Swal.fire({
-          icon: "error",
-          title: translate("error", lang),
-          text: translate("dates_are_required", lang),
-        });
-        event.preventDefault();
-      }
-    });
+    if (paramType === "period" && (!startDate || !endDate)) {
+      Swal.fire({
+        icon: "error",
+        title: translate("error", lang),
+        text: translate("dates_are_required", lang),
+      });
+      event.preventDefault();
+    }
+  });
   updateDates();
 }
 
 //----------------نوع رسوم فاتورة التأكيد على حذف -------------------
-
 $("#invoice_fees_types_table").on("click", ".delete-button", function () {
   var id = $(this).data("id");
   Swal.fire({
@@ -2190,8 +2267,7 @@ $("#invoice_fees_types_table").on("click", ".delete-button", function () {
   });
 });
 
-// ---------------تجهيز نوع رسوم خدمة للتعديل------------
-
+// ---------------تجهيز نوع رسوم فاتورة للتعديل------------
 $(document).ready(function () {
   $("#invoice_fees_types_table").on("click", ".edit-button", function () {
     var id = $(this).data("id");
@@ -2226,10 +2302,7 @@ $(document).ready(function () {
         Swal.fire({
           icon: "error",
           title: translate("error", lang),
-          text: translate(
-            "an_error_occurred_while_fetching_the_data_please_try_again_later",
-            lang
-          ),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
         });
       },
     });
@@ -2237,28 +2310,27 @@ $(document).ready(function () {
 });
 
 // // ---------------تجهيز فاتورة للتعديل------------
-
+if (staticPageName == "invoices") {
 $(document).ready(function () {
   var validFeeTypes = {};
 
   // وظيفة لحساب وتحديث قيمة السعر بناءً على الكمية والسعر
   function updateFeeAmount(input) {
+        console.log("444444");
+
     const formGroup = $(input).closest(".form-group");
     // const quantity = formGroup.find('input[name="quantity[]"]').val();
     const feeAmountField = formGroup.find('input[name="fee_amount[]"]');
     // const feeAmount = feeAmountField.data("price");
     const feeBankAmountField = formGroup.find('input[name="bank_deduction[]"]');
     const feeBankAmount = feeBankAmountField.data("bank");
-    
+
     // const newAmount = (parseFloat(feeAmount) || 0);
-    const newBankAmount = (parseFloat(feeAmountField.val()) || 0);
+    const newBankAmount = parseFloat(feeAmountField.val()) || 0;
     // feeAmountField.val(newAmount.toFixed(2));
     if (feeBankAmount) {
       feeBankAmountField.val(newBankAmount.toFixed(2));
     }
-    // console.log(newAmount);
-    // console.log(newBankAmount);
-
     // تحديث المجموع بعد تعديل السعر
     updateTotal();
   }
@@ -2275,7 +2347,7 @@ $(document).ready(function () {
         const feeAmount = $(this).find('input[name="fee_amount[]"]').val();
         const feeBankAmount = $(this).find('input[name="bank_deduction[]"]').data("bank");
         // const quantity = $(this).find('input[name="quantity[]"]').val();
-        const newBankAmount = (parseFloat(feeAmount) || 0);
+        const newBankAmount = parseFloat(feeAmount) || 0;
         total += parseFloat(feeAmount) || 0;
         if (feeBankAmount) {
           totalBank += parseFloat(newBankAmount) || 0;
@@ -2333,12 +2405,8 @@ $(document).ready(function () {
             if (ui.item.valid) {
               $(this).val(ui.item.label); // تعيين القيمة في الحقل الحالي
               const formGroup = $(this).closest(".form-group");
-              const feeAmountField = formGroup.find(
-                'input[name="fee_amount[]"]'
-              );
-              const feeBankAmountField = formGroup.find(
-                'input[name="bank_deduction[]"]'
-              );
+              const feeAmountField = formGroup.find('input[name="fee_amount[]"]');
+              const feeBankAmountField = formGroup.find('input[name="bank_deduction[]"]');
               feeAmountField.val(ui.item.amount);
               feeAmountField.data("price", ui.item.amount);
               feeBankAmountField.data("bank", ui.item.bank);
@@ -2383,10 +2451,7 @@ $(document).ready(function () {
       Swal.fire({
         icon: "warning",
         title: translate("are_you_sure", lang),
-        text: translate(
-          "you_have_selected_cancelled_do_you_want_to_proceed",
-          lang
-        ),
+        text: translate("you_have_selected_cancelled_do_you_want_to_proceed", lang),
         showConfirmButton: true,
         showCancelButton: true,
         confirmButtonText: translate("yes_update_it", lang),
@@ -2465,7 +2530,7 @@ $(document).ready(function () {
         $("#invoice_date").val(formattedDate);
         $("#port").val(data.port);
         $("#status").val(data.status);
-        $("#customer_id").val(data.customer_id); // 
+        $("#customer_id").val(data.customer_id); //
         $("#hidden_customer_id").val(data.customer_id);
         $("#customer_name").val(data.customer_name);
         $("#exporter_importer_name").val(data.exporter_importer_name);
@@ -2507,38 +2572,18 @@ $(document).ready(function () {
               $("#feesContainer").append(`
                                 <div class="form-group" style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: center;">
                                   <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap; width: 35%">
-                                    <label for="fee_type" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                                      "type",
-                                      lang
-                                    )}</label>
-                                    <input type="text" class="form-control trip_fee_type_id" name="fee_type[]" value="${fee_type_data}" required placeholder="${translate(
-                                      "type_to_search",
-                                      lang
-                                    )}...">
-                                    <input type="hidden" class="form-control" name="fee_ids[]" value="${
-                                      fee.id
-                                    }">
-                                    <input type="hidden" class="form-control" name="bank_deduction[]" value="${
-                                      fee.fee_type_bank_deduction == true ? fee.amount : 0.00
-                                    }">
+                                    <label for="fee_type" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("type", lang)}</label>
+                                    <input type="text" class="form-control trip_fee_type_id" name="fee_type[]" value="${fee_type_data}" required placeholder="${translate("type_to_search", lang)}...">
+                                    <input type="hidden" class="form-control" name="fee_ids[]" value="${fee.id}">
+                                    <input type="hidden" class="form-control" name="bank_deduction[]" value="${fee.fee_type_bank_deduction == true ? fee.amount : 0.0}">
                                 </div>    
                                 <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
-                                    <label for="fee_amount" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                                      "price",
-                                      lang
-                                    )}</label>
-                                    <input type="number" min="0" step="0.01" class="form-control" name="fee_amount[]" value="${
-                                      fee.amount
-                                    }" required>
+                                    <label for="fee_amount" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("price", lang)}</label>
+                                    <input type="number" min="0" step="0.01" class="form-control" name="fee_amount[]" value="${fee.amount}" required>
                                 </div>
                                 <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
-                                    <label for="description" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate(
-                                      "additional_description",
-                                      lang
-                                    )} ${translate("optional", lang)}</label>
-                                    <input type="text" class="form-control" name="description[]" value="${
-                                      fee.description
-                                    }">
+                                    <label for="description" style="margin-right: 0.5rem; margin-left: 0.5rem;">${translate("additional_description", lang)} ${translate("optional", lang)}</label>
+                                    <input type="text" class="form-control" name="description[]" value="${fee.description}">
                                 </div>
                                 <div style="display: flex; flex-direction: column; align-items: flex-start; white-space: nowrap;">
                                     <label for="" style="margin-right: 0.5rem; margin-left: 0.5rem;"><br></label>
@@ -2549,15 +2594,10 @@ $(document).ready(function () {
 
               // تحديث قيمة المبلغ بناءً على الكمية والسعر لكل حقل
               const formGroup = $("#feesContainer").find(".form-group").last(); // الحصول على آخر حقل مضاف
-              const feeAmountField = formGroup.find(
-                'input[name="fee_amount[]"]'
-              );
-              const feeBankAmountField = formGroup.find(
-                'input[name="bank_deduction[]"]'
-              );
+              const feeAmountField = formGroup.find('input[name="fee_amount[]"]');
+              const feeBankAmountField = formGroup.find('input[name="bank_deduction[]"]');
               feeAmountField.data("price", fee.fee_type_amount);
               feeBankAmountField.data("bank", fee.fee_type_bank_deduction);
-
             });
             // ديث المجموع بعد إضافة الحقول الجديدة
             // updateTotal();
@@ -2568,10 +2608,7 @@ $(document).ready(function () {
             Swal.fire({
               icon: "error",
               title: translate("error", lang),
-              text: translate(
-                "an_error_occurred_while_fetching_the_data_please_try_again_later",
-                lang
-              ),
+              text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
             });
           },
         });
@@ -2580,10 +2617,7 @@ $(document).ready(function () {
         Swal.fire({
           icon: "error",
           title: translate("error", lang),
-          text: translate(
-            "an_error_occurred_while_fetching_the_data_please_try_again_later",
-            lang
-          ),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
         });
       },
     });
@@ -2599,12 +2633,10 @@ $(document).ready(function () {
       .find(".form-group")
       .each(function () {
         const feeAmount = $(this).find('input[name="fee_amount[]"]').val();
-        const feeBankAmount = $(this)
-          .find('input[name="bank_deduction[]"]')
-          .data("bank");
+        const feeBankAmount = $(this).find('input[name="bank_deduction[]"]').data("bank");
 
         // const quantity = $(this).find('input[name="quantity[]"]').val();
-        const newBankAmount = (parseFloat(feeAmount) || 0);
+        const newBankAmount = parseFloat(feeAmount) || 0;
         total += parseFloat(feeAmount) || 0;
         if (feeBankAmount) {
           totalBank += parseFloat(newBankAmount) || 0;
@@ -2618,7 +2650,7 @@ $(document).ready(function () {
   // استدعاء updateTotal عند حدوث تغييرات في الحقول ذات الصلة
   $(document).on("input", 'input[name="fee_amount[]"]', function () {
     updateFeeAmount(this);
-    
+
     // updateTotal();
   });
   // عند تغيير قيمة حقل الكمية
@@ -2630,9 +2662,8 @@ $(document).ready(function () {
   //   updateTotal();
   // });
 });
-
+}
 //---------------- التأكيد على حذف فاتورة-------------------
-
 $("#invoices_table").on("click", ".delete-button", function () {
   var id = $(this).data("id");
   var oldBankAmount = $(this).data("old_bank_amount");
@@ -2662,7 +2693,7 @@ $("#invoices_table").on("click", ".delete-button", function () {
 // ------- البحث عن عميل------------
 $(document).ready(function () {
   var validDriverIds = {};
-  var oldValue; 
+  var oldValue;
 
   $("#customer_id").on("focus", function () {
     oldValue = $(this).val();
@@ -2707,27 +2738,15 @@ $(document).ready(function () {
             // $("#pop_exit_returns").text(ui.item.exit_returns);
             // $("#pop_entry_returns").text(ui.item.entry_returns);
             if (ui.item.exit_clearance != 0) {
-              $("#pop_exit_clearance").text(
-                translate("exit_clearance", lang) +
-                  ": " +
-                  ui.item.exit_clearance +
-                  " | "
-              );
+              $("#pop_exit_clearance").text(translate("exit_clearance", lang) + ": " + ui.item.exit_clearance + " | ");
             }
 
             if (ui.item.entry_clearance != 0) {
-              $("#pop_entry_clearance").text(
-                translate("entry_clearance", lang) +
-                  ": " +
-                  ui.item.entry_clearance +
-                  " | "
-              );
+              $("#pop_entry_clearance").text(translate("entry_clearance", lang) + ": " + ui.item.entry_clearance + " | ");
             }
 
             if (ui.item.customer_notes) {
-              $("#pop_customer_notes").text(
-                translate("notes", lang) + ": " + ui.item.customer_notes
-              );
+              $("#pop_customer_notes").text(translate("notes", lang) + ": " + ui.item.customer_notes);
             }
             if (ui.item.exit_clearance != 0 || ui.item.entry_clearance != 0 || ui.item.customer_notes) {
               $(".alert-info").show();
@@ -2753,9 +2772,6 @@ $(document).ready(function () {
     };
   });
 
-
-
-
   $("#customer_id").on("blur", function () {
     var newValue = $(this).val();
     if (!validDriverIds.hasOwnProperty(newValue)) {
@@ -2774,7 +2790,6 @@ $(document).ready(function () {
 
 //---------------- التأكيد على دفع فاتورة-------------------
 //---------------- التأكيد على حذف فاتورة-------------------
-
 $("#invoices_table").on("click", ".pay-invoice-button", function () {
   var id = $(this).data("id");
   Swal.fire({
@@ -2801,7 +2816,6 @@ $("#invoices_table").on("click", ".pay-invoice-button", function () {
 });
 
 //----------------عميل التأكيد على حذف -------------------
-
 $("#customers_table").on("click", ".delete-button", function () {
   var id = $(this).data("id");
   Swal.fire({
@@ -2827,8 +2841,7 @@ $("#customers_table").on("click", ".delete-button", function () {
   });
 });
 
-// ---------------تجهيز نوع رسوم خدمة للتعديل------------
-
+// ---------------تجهيز عميل للتعديل------------
 $(document).ready(function () {
   $("#customers_table").on("click", ".edit-button", function () {
     var id = $(this).data("id");
@@ -2866,41 +2879,9 @@ $(document).ready(function () {
         Swal.fire({
           icon: "error",
           title: translate("error", lang),
-          text: translate(
-            "an_error_occurred_while_fetching_the_data_please_try_again_later",
-            lang
-          ),
+          text: translate("an_error_occurred_while_fetching_the_data_please_try_again_later", lang),
         });
       },
     });
   });
 });
-
-
-
-// $(document).ready(function () {
-//   // ضبط التواريخ والأوقات حسب المنطقة الزمنية لدبي (GMT+4)
-//   var now = new Date();
-
-//   // تحويل التاريخ إلى توقيت دبي
-//   var dubaiOffset = 4 * 60; // دبي توقيت (UTC+4)
-//   var localOffset = now.getTimezoneOffset(); // الإزاحة الزمنية المحلية
-//   var dubaiTime = new Date(now.getTime() + (dubaiOffset - localOffset) * 60 * 1000);
-
-//   // تحديد الساعة 12:00 AM بداية اليوم بتوقيت دبي
-//   var startDateString = dubaiTime.toISOString().split("T")[0] + "T00:00";
-
-//   // تحديد الساعة 11:59 PM نهاية اليوم بتوقيت دبي
-//   var endDateString = dubaiTime.toISOString().split("T")[0] + "T23:59";
-
-//   // التحقق إذا كانت الحقول من النوع datetime-local
-//   if ($("#start_date").attr("type") === "datetime-local") {
-//     $("#start_date").val(startDateString); // تعيين القيمة
-//   }
-//   console.log(startDateString);
-//   console.log(endDateString);
-  
-//   if ($("#end_date").attr("type") === "datetime-local") {
-//     $("#end_date").val(endDateString); // تعيين القيمة
-//   }
-// });

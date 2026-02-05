@@ -21,8 +21,8 @@ include_once('./header.php');
     </style>
 </head>
 
-<div class="container mt-5">
-    <h2 class="mb-4 mt-5"><?php echo translate('generate_report', $lang); ?></h2>
+<div class="container">
+    <h2 class="mb-4"><?php echo translate('generate_report', $lang); ?></h2>
 
     <?php
     if (!isset($_GET['report_type'])) {

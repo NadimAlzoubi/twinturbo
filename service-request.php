@@ -6,45 +6,46 @@ include_once('./header.php');
     <title><?php echo translate('services', $lang) . ' - ' . $translated_user_role; ?></title>
 </head>
 
-<div class="container">
-    <h2 class="mb-4"><?php echo translate('add_service', $lang); ?></h2>
-    <form method="post" id="tripForm">
+<div class="container mt-1">
+    <h2 class="mb-4"><?php echo translate('service_request', $lang); ?></h2>
+    <form method="post" id="service-request-form">
         <div class="form-container">
             <div class="form-group">
-                <label for="service_date"><?php echo translate('service_date', $lang); ?></label>
-                <input type="date" class="form-control" id="service_date" name="service_date" required>
-            </div>
-            <div class="form-group">
-                <label for="payment_status"><?php echo translate('payment_status', $lang); ?></label>
-                <select class="form-select" id="payment_status" name="payment_status" required>
-                    <option value="cash"><?php echo translate('cash', $lang); ?></option>
-                    <option value="credit"><?php echo translate('credit', $lang); ?></option>
-                    <option value="transfer"><?php echo translate('transfer', $lang); ?></option>
+                <label for="service_type"><?php echo translate('service_type', $lang); ?></label>
+                <select class="form-select" id="service_type" name="service_type" required>
+                    <?php
+                        $services_fees_types = getServiceFeesTypes();
+                        foreach ($services_fees_types as $service_fee_type) {
+                            echo "<option value='{$service_fee_type['id']}'>{$service_fee_type['fee_name']}</option>";
+                        }
+                    ?>
                 </select>
             </div>
+
             <div class="form-group">
-                <label for="driver_name"><?php echo translate('driver_name', $lang); ?></label>
-                <input type="text" class="form-control" id="driver_name" name="driver_name" required>
+                <label for="driver_id"><?php echo translate('driver_id', $lang); ?></label>
+                <input type="text" class="form-control" id="driver_id" name="driver_id" required placeholder="<?php echo translate('type_to_search', $lang); ?>...">
+                <input type="hidden" class="form-control" id="hidden_driver_id" name="hidden_driver_id">
+                <input type="hidden" class="form-control" id="driver_uae_id" name="driver_uae_id">
+                <input type="hidden" class="form-control" id="driver_passport_number" name="driver_passport_number">
             </div>
+
             <div class="form-group">
-                <label for="vehicle_number"><?php echo translate('vehicle_number', $lang); ?></label>
-                <input type="text" min="0" step="0.01" class="form-control" id="vehicle_number"
-                    name="vehicle_number" required>
+                <label for="user_id"><?php echo translate('user_id', $lang); ?></label>
+                <input type="text" class="form-control" id="user_id" name="user_id" required placeholder="<?php echo translate('type_to_search', $lang); ?>...">
+                <input type="hidden" class="form-control" id="hidden_user_id" name="hidden_user_id">
             </div>
+
             <div class="form-group">
-                <label for="nov"><?php echo translate('number_of_vehicles', $lang); ?></label>
-                <input type="number" value="1" min="1" class="form-control" id="nov"
-                    name="nov" required>
+                <label for="shipper_id"><?php echo translate('shipper_id', $lang); ?></label>
+                <input type="text" class="form-control" id="shipper_id" name="shipper_id" required placeholder="<?php echo translate('type_to_search', $lang); ?>...">
+                <input type="hidden" class="form-control" id="hidden_shipper_id" name="hidden_shipper_id">
             </div>
-            <div class="form-group">
-                <label for="phone_number"><?php echo translate('phone_number', $lang); ?>
-                    <?php echo translate('optional', $lang); ?></label>
-                <input type="text" min="0" step="0.01" class="form-control" id="phone_number" name="phone_number">
-            </div>
+
             <div class="form-group">
                 <label for="notes"><?php echo translate('notes', $lang); ?>
                     <?php echo translate('optional', $lang); ?></label></label>
-                <input type="text" min="0" step="0.01" class="form-control" id="notes" name="notes">
+                <input type="text" class="form-control" id="notes" name="notes">
             </div>
         </div>
 
@@ -52,47 +53,116 @@ include_once('./header.php');
 
 
 
-        <div class="text-center"><?php echo translate('service_fees', $lang); ?></div>
-        <hr class="m-3">
-
-
-        <div id="feesContainer">
-
-        </div>
-
-        <div class="d-flex flex-column flex-md-row align-items-center justify-content-start gap-4">
-            <button type="button" id="addFee" class="btn btn-primary flex-grow-1 w-50 w-md-auto">
-                <?php echo translate('add_a_new_fee', $lang); ?>
-            </button>
-            <div class="d-flex flex-column flex-md-row align-items-center justify-content-around gap-2 w-75 w-md-auto">
-                <div class="d-flex flex-column flex-md-row align-items-center gap-2">
-                    <label for="total_sum" class="mb-1 mb-md-0">
-                        <?php echo translate('total', $lang); ?>
-                    </label>
-                    <input readonly id="total_sum" type="number" class="form-control w-75 w-md-auto text-center">
-                </div>
-                <div class="d-flex flex-column flex-md-row align-items-center gap-2">
-                    <label for="total_bank_sum" class="mb-1 mb-md-0 w-50 w-sm-75">
-                        <?php echo translate('bank_deduction', $lang); ?>
-                    </label>
-                    <input readonly id="total_bank_sum" type="number" class="form-control w-75 w-md-auto text-center">
-                </div>
-            </div>
-        </div>
-
-
-
-        <hr class="m-3">
-
-
-        <button name="insert-service" id="insert-service-btn" type="submit"
-            class="btn btn-primary"><?php echo translate('add', $lang); ?></button>
-        <button style="display: none;" name="update-service" id="update-service-btn" type="submit"
+        <button name="insert-service-request" id="insert-service-request-btn" type="submit"
+            class="btn btn-primary"><?php echo translate('create', $lang); ?></button>
+        <button style="display: none;" name="update-service-request" id="update-service-request-btn" type="submit"
             class="btn btn-warning"><?php echo translate('update', $lang); ?></button>
-        <a style="display: none;" href="./services.php" id="cancel-service-btn"
+        <a style="display: none;" href="./service-request.php" id="cancel-service-request-btn"
             class="btn btn-secondary"><?php echo translate('cancel', $lang); ?></a>
 
     </form>
+
+
+
+
+
+    <h2 class="mb-4 mt-5"><?php echo translate('service_requests', $lang); ?></h2>
+    <div class="mb-4 mt-2 d-flex align-items-center">
+        <?php
+        $selected_limit_service_requests = isset($_POST['limit-service-requests']) ? $_POST['limit-service-requests'] : $sql_defualt_limit;
+        ?>
+        <form method="post" class="d-flex align-items-center ms-2 gap-3">
+            <label for="limit-service-requests"
+                class="me-2 mb-0"><?php echo translate('select_query_limit', $lang); ?></label>
+            <select name="limit-service-requests" class="form-select me-2" id="limit-service-requests" required
+                style="width: auto;">
+                <option value="25" <?php if ($selected_limit_service_requests == '25') echo 'selected'; ?>>25</option>
+                <option value="50" <?php if ($selected_limit_service_requests == '50') echo 'selected'; ?>>50</option>
+                <option value="100" <?php if ($selected_limit_service_requests == '100') echo 'selected'; ?>>100</option>
+                <option value="250" <?php if ($selected_limit_service_requests == '250') echo 'selected'; ?>>250</option>
+                <option value="500" <?php if ($selected_limit_service_requests == '500') echo 'selected'; ?>>500</option>
+                <option value="" <?php if ($selected_limit_service_requests == '') echo 'selected'; ?>>
+                    <?php echo translate('all', $lang); ?></option>
+            </select>
+            <button name="limit-service-requests-btn" type="submit"
+                class="btn btn-info btn-md"><?php echo translate('query', $lang); ?></button>
+        </form>
+    </div>
+
+    <div class="table-section">
+        <table id="service_requests_table"
+            class="display nowrap cell-border hover table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th><?php echo translate('id', $lang); ?></th>
+                    <th><?php echo translate('action', $lang); ?></th>
+                    <th><?php echo translate('request_date', $lang); ?></th>
+                    <th><?php echo translate('status', $lang); ?></th>
+                    <th><?php echo translate('service_type_name', $lang); ?></th>
+                    <th><?php echo translate('driver_name', $lang); ?></th>
+                    <th><?php echo translate('shipper_name', $lang); ?></th>
+                    <th><?php echo translate('user_name', $lang); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if (isset($_POST['limit-service-requests'])) {
+                    $sql_limit_services_requests = mysqli_real_escape_string($connection, $_POST['limit-service-requests']);
+                } else {
+                    $sql_limit_services_requests = $sql_defualt_limit;
+                }
+                $service_requests = getAllServiceRequests($sql_limit_services_requests);
+                $serial = 1;
+                foreach ($service_requests as $service_request) {
+                    $service_request['request_date'] = date('d-m-Y H:i', strtotime($service_request['request_date']));
+
+                    echo "<tr>
+                            <td>{$service_request['id']}</td>
+                            <td>
+                            " . (
+                        $user_role != 'user' ? "
+                                        <button class='btn btn-warning btn-sm edit-button' data-id='{$service_request['id']}'><i class='far fa-edit'></i></button>
+                                        <button class='btn btn-danger btn-sm delete-button' data-id='{$service_request['id']}'><i class='far fa-trash-alt'></i></button>
+                                    " : ''
+                    )
+                        . "
+                            </td>
+                            <td>{$service_request['request_date']}</td>
+                            <td>{$service_request['status']}</td>
+                            <td>{$service_request['service_type_name']}</td>
+                            <td>{$service_request['driver_name']} | {$service_request['driver_vehicle_number']}</td>
+                            <td>{$service_request['shipper_name']} | {$service_request['shipper_office_name']}</td>
+                            <td>{$service_request['user_name']}</td>
+                        </tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

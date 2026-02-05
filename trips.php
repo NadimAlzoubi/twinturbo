@@ -6,7 +6,7 @@ include_once('./header.php');
     <title><?php echo translate('trips', $lang) . ' - ' . $translated_user_role; ?></title>
 </head>
 
-<div class="container mt-5">
+<div class="container">
     <h2 class="mb-4"><?php echo translate('add_trip', $lang); ?></h2>
     <form method="post" id="tripForm">
         <div class="form-container">

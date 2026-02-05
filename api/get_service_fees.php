@@ -12,6 +12,7 @@ if (isset($_GET['id'])) {
         sf.service_fee_type_id, 
         sf.quantity, 
         sf.amount, 
+        sf.bank_deduction_amount, 
         sf.description, 
         sft.fee_name AS fee_type_name, 
         sft.fee_amount AS fee_type_amount, 
