@@ -271,6 +271,7 @@ $translate = [
         'import' => 'استيراد',
         'export' => 'تصدير',
         'both' => 'كلاهما',
+        'clients_database' => 'قاعدة بيانات العملاء',
     ],
     'en' => [
         'dir' => 'style="direction: ltr; text-align: left;"',
@@ -544,6 +545,7 @@ $translate = [
         'import' => 'Import',
         'export' => 'Export',
         'both' => 'Both',
+        'clients_database' => 'Clients Database',
     ],
 ];
 function translate($key, $lang = 'en')
